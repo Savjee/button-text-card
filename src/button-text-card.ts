@@ -173,20 +173,21 @@ export class BoilerplateCard extends LitElement {
       .icon-container {
         width: 85px;
         height: 85px;
-        text-align: center;
         margin-right: 24px;
         border-radius: 16px;
         background-color: var(--primary-background-color);
         box-shadow: 9px 9px 17px #c8c8c8, -9px -9px 17px #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .icon-container ha-icon,
       .text-container {
         color: var(--primary-text-color);
       }
       .icon-container ha-icon {
-        margin-top: 18px;
-        width: 48px;
-        height: 48px;
+        width: 33px;
+        height: 33px;
       }
 
       .text-container {
