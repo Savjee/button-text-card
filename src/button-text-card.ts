@@ -75,10 +75,19 @@ export class BoilerplateCard extends LitElement {
 
     // If no icon was set by the user, try fetching one from HA
     if (!this._config.icon || this._config.icon === '') {
-      const hassIcon = this.hass.states[this._config.entity].attributes.icon;
+      let icon = 'mdi:alert-circle';
+
+      if (this._config.entity) {
+        const hassIcon = this.hass.states[this._config.entity].attributes.icon;
+        if (hassIcon) {
+          icon = hassIcon;
+        }
+      }
+
       this.setConfig({
         ...this._config,
-        icon: hassIcon || 'mdi:alert-circle',
+        icon: icon,
+        _rendered_icon: icon,
       });
     }
 
