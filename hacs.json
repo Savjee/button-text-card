@@ -1,5 +1,5 @@
 {
     "name": "Button Text Card",
     "render_readme": true,
-    "filename": "button-text-card.js"
+    "filename": "dist/button-text-card.js"
 }
