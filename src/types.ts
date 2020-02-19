@@ -7,8 +7,15 @@ export interface BoilerplateCardConfig {
   show_warning?: boolean;
   show_error?: boolean;
   test_gui?: boolean;
-  entity?: string;
+  entity: string;
   tap_action?: ActionConfig;
   hold_action?: ActionConfig;
   double_tap_action?: ActionConfig;
+
+  // Xavier
+  title?: string;
+  _rendered_title?: string;
+  icon?: string;
+  subtitle?: string | boolean;
+  _rendered_subtitle?: string | boolean;
 }
