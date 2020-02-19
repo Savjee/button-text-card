@@ -55,7 +55,7 @@ export class BoilerplateCard extends LitElement {
           if (config[key] !== newValue) {
             updated = true;
             config[key] = renderedTemplates[i];
-            console.log('key', key, renderedTemplates[i]);
+            // console.log('key', key, renderedTemplates[i]);
           }
         }
 
@@ -73,6 +73,7 @@ export class BoilerplateCard extends LitElement {
       return html``;
     }
 
+    // If no icon was set by the user, try fetching one from HA
     if (!this._config.icon || this._config.icon === '') {
       const hassIcon = this.hass.states[this._config.entity].attributes.icon;
       this.setConfig({
@@ -90,11 +91,10 @@ export class BoilerplateCard extends LitElement {
           repeat: this._config.hold_action ? this._config.hold_action.repeat : undefined,
         })}
         tabindex="0"
-        aria-label=${`Boilerplate: ${this._config.entity}`}
       >
         <div class="flex-container">
           <div class="icon-container">
-            <ha-icon icon="${this._config.icon}"></ha-icon>
+            <ha-icon icon="${this._config._rendered_icon}"></ha-icon>
           </div>
 
           <div class="text-container">
@@ -145,6 +145,7 @@ export class BoilerplateCard extends LitElement {
       ha-card {
         --paper-card-background-color: 'rgba(11, 11, 11, 0.00)';
         box-shadow: 2px 2px rgba(0, 0, 0, 0);
+        padding: 16px;
       }
       .warning {
         display: block;

@@ -16,6 +16,7 @@ export interface BoilerplateCardConfig {
   title?: string;
   _rendered_title?: string;
   icon?: string;
+  _rendered_icon?: string;
   subtitle?: string | boolean;
   _rendered_subtitle?: string | boolean;
 }
