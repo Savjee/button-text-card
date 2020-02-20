@@ -33,8 +33,8 @@ export class BoilerplateCard extends LitElement {
 
     this._config = {
       name: 'Button Text Card',
-      title: 'Button Text Card Title',
-      subtitle: 'Subtitle',
+      title: '',
+      subtitle: '',
       ...config,
     };
   }
