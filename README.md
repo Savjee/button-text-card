@@ -1,6 +1,6 @@
 <p align="center">
   <a href="" rel="noopener">
- <img src="docs/logo.png" alt="Project logo"></a>
+ <img src="https://savjee.github.io/button-text-card/logo.png" alt="Project logo"></a>
 </p>
 
 <h3 align="center">Button Text Card</h3>
@@ -36,7 +36,7 @@ Custom, "neumorphism" card for Home Assistant with support for templating.
 
 **Basic card with static title, subtitle and custom icon**
 <div align="center">
-    <img src="docs/example-1.png">
+    <img src="https://savjee.github.io/button-text-card/example-1.png">
 </div>
 
 ```yaml
@@ -48,7 +48,7 @@ icon: 'mdi:lightbulb-outline'
 
 **Only title**
 <div align="center">
-    <img src="docs/example-2.png">
+    <img src="https://savjee.github.io/button-text-card/example-2.png">
 </div>
 
 ```yaml
@@ -61,7 +61,7 @@ icon: 'mdi:format-title'
 
 You can use templates in title, subtitle and even for the icon: 
 <div align="center">
-    <img src="docs/example-3.png">
+    <img src="https://savjee.github.io/button-text-card/example-3.png">
 </div>
 
 ```yaml
