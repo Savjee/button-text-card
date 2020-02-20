@@ -108,7 +108,7 @@ export class BoilerplateCard extends LitElement {
 
           <div class="text-container">
             <h1>${this._config._rendered_title}</h1>
-            <p class="${this._config.subtitle === '' ? 'hidden' : ''}">${this._config._rendered_subtitle}</p>
+            <p class="${this._config._rendered_subtitle === '' ? 'hidden' : ''}">${this._config._rendered_subtitle}</p>
           </div>
         </div>
       </ha-card>
