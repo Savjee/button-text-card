@@ -18,10 +18,8 @@ console.info(
   'color: white; font-weight: bold; background: dimgray',
 );
 
-// TODO Name your custom element
 @customElement('button-text-card')
 export class BoilerplateCard extends LitElement {
-  // TODO Add any properities that should cause your element to re-render here
   @property() public hass?: HomeAssistant;
   @property() private _config?: BoilerplateCardConfig;
 
