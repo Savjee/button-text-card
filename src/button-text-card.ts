@@ -120,7 +120,7 @@ export class BoilerplateCard extends LitElement {
   }
 
   private _renderTemplate(template: string | undefined): Promise<string> {
-    return new Promise((resolve, _) => {
+    return new Promise(resolve => {
       if (!template) {
         return resolve('');
       }
