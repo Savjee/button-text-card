@@ -196,12 +196,19 @@ export class BoilerplateCard extends LitElement {
       .text-container h1 {
         font-size: 21px;
         font-weight: 500;
-        margin: 0 0 10px 0;
+        margin: 0;
+      }
+      .text-container h1 + p {
+        margin-top: 10px;
       }
       .text-container p {
         font-size: 15px;
         font-weight: 400;
         margin: 0;
+      }
+
+      .text-container p.hidden {
+        display: none;
       }
     `;
   }
