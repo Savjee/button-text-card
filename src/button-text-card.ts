@@ -65,7 +65,7 @@ export class BoilerplateCard extends LitElement {
       });
     }
 
-    return hasConfigOrEntityChanged(this, changedProps, false);
+    return hasConfigOrEntityChanged(this, changedProps, true);
   }
 
   protected render(): TemplateResult | void {
