@@ -11,7 +11,7 @@
     "custom-cards"
   ],
   "module": "button-text-card.js",
-  "repository": "git@github.com:custom_cards/boilerplate-card.git",
+  "repository": "git@github.com:Savjee/button-text-card.git",
   "author": "Xavier Decuyper <hi@savjee.be>",
   "license": "MIT",
   "dependencies": {
