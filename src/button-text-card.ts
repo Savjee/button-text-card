@@ -134,7 +134,7 @@ export class BoilerplateCard extends LitElement {
             if (output.result) {
               return resolve(output.result);
             } else {
-              return resolve('Could not render template');
+              return resolve('');
             }
           },
 
