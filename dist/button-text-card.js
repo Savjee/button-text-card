@@ -200,7 +200,7 @@ found at http://polymer.github.io/PATENTS.txt
           </div>
         </div>
       </ha-card>
-    `}_handleAction(t){this.hass&&this._config&&t.detail.action&&vt(this,this.hass,this._config,t.detail.action)}_renderTemplate(t){return new Promise(e=>t?-1==t.indexOf("{")?e(t):void(this.hass&&this.hass.connection.subscribeMessage(t=>t.result?e(t.result):e(""),{type:"render_template",template:t})):e(""))}static get styles(){return Q`
+    `}_handleAction(t){this.hass&&this._config&&t.detail.action&&vt(this,this.hass,this._config,t.detail.action)}_renderTemplate(t){return new Promise(e=>t?-1==t.indexOf("{")?e(t):void(this.hass&&this.hass.connection.subscribeMessage(t=>t.success&&!0===t.success?e(t.result||""):e("Could not render template"),{type:"render_template",template:t})):e(""))}static get styles(){return Q`
       ha-card {
         --paper-card-background-color: 'rgba(11, 11, 11, 0.00)';
         box-shadow: 2px 2px rgba(0, 0, 0, 0);

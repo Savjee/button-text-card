@@ -131,10 +131,10 @@ export class BoilerplateCard extends LitElement {
       if (this.hass) {
         this.hass.connection.subscribeMessage(
           (output: any) => {
-            if (output.result) {
-              return resolve(output.result);
+            if (output.success && output.success === true) {
+              return resolve(output.result || '');
             } else {
-              return resolve('');
+              return resolve('Could not render template');
             }
           },
 
