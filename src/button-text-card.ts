@@ -23,6 +23,8 @@ export class BoilerplateCard extends LitElement {
   @property() public hass?: HomeAssistant;
   @property() private _config?: BoilerplateCardConfig;
 
+  private lastUpdate = 0;
+
   public setConfig(config: BoilerplateCardConfig): void {
     // TODO Check for required fields and that they are of the proper format
     if (!config || config.show_error) {
@@ -63,6 +65,13 @@ export class BoilerplateCard extends LitElement {
       });
     }
 
+    // Only allow update every 2 seconds
+    if (Date.now() - this.lastUpdate < 2000) {
+      console.log('Throttle');
+      return false;
+    }
+
+    this.lastUpdate = Date.now();
     return hasConfigOrEntityChanged(this, changedProps, true);
   }
 
