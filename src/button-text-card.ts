@@ -40,6 +40,10 @@ export class BoilerplateCard extends LitElement {
   }
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
+    if (hasConfigOrEntityChanged(this, changedProps, false) === false) {
+      return false;
+    }
+
     if (this._config) {
       const config = this._config;
       const templateSupport = ['title', 'subtitle', 'icon'];
