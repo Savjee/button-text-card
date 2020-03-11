@@ -55,7 +55,6 @@ export class BoilerplateCard extends LitElement {
           if (config[key] !== newValue) {
             updated = true;
             config[key] = renderedTemplates[i];
-            // console.log('key', key, renderedTemplates[i]);
           }
         }
 
@@ -65,14 +64,7 @@ export class BoilerplateCard extends LitElement {
       });
     }
 
-    // Only allow update every 2 seconds
-    if (Date.now() - this.lastUpdate < 2000) {
-      console.log('Throttle');
-      return false;
-    }
-
-    this.lastUpdate = Date.now();
-    return hasConfigOrEntityChanged(this, changedProps, true);
+    return hasConfigOrEntityChanged(this, changedProps, false);
   }
 
   protected render(): TemplateResult | void {
