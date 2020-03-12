@@ -59,7 +59,6 @@ export class BoilerplateCard extends LitElement {
   }
 
   protected render(): TemplateResult | void {
-    console.log('card', 'render');
     if (!this._config || !this.hass) {
       return html``;
     }
