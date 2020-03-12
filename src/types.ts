@@ -19,4 +19,8 @@ export interface BoilerplateCardConfig {
   _rendered_icon?: string;
   subtitle: string;
   _rendered_subtitle?: string;
+
+  large: boolean;
+  background_color?: string;
+  font_color?: string;
 }

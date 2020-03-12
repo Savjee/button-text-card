@@ -40,6 +40,7 @@ export class BoilerplateCard extends LitElement {
       name: 'Button Text Card',
       title: '',
       subtitle: '',
+      large: false,
       ...config,
     };
 
@@ -97,6 +98,14 @@ export class BoilerplateCard extends LitElement {
       });
     }
 
+    if (this._config.background_color) {
+      this.style.setProperty('--primary-background-color', this._config.background_color);
+    }
+
+    if (this._config.font_color) {
+      this.style.setProperty('--primary-text-color', this._config.font_color);
+    }
+
     return html`
       <ha-card
         @action=${this._handleAction}
@@ -107,8 +116,8 @@ export class BoilerplateCard extends LitElement {
         })}
         tabindex="0"
       >
-        <div class="flex-container">
-          <div class="icon-container">
+        <div class="flex-container ${this._config.large === true ? 'card-look' : ''}">
+          <div class="icon-container ${this._config.large === false ? 'card-look' : ''}">
             <ha-icon icon="${this._config._rendered_icon}"></ha-icon>
           </div>
 
@@ -168,13 +177,16 @@ export class BoilerplateCard extends LitElement {
         color: rgb(99, 107, 116);
       }
 
+      .card-look {
+        border-radius: 16px;
+        background-color: var(--primary-background-color);
+        box-shadow: 9px 9px 17px #c8c8c8, -9px -9px 17px #ffffff;
+      }
+
       .icon-container {
         width: 85px;
         height: 85px;
         margin-right: 24px;
-        border-radius: 16px;
-        background-color: var(--primary-background-color);
-        box-shadow: 9px 9px 17px #c8c8c8, -9px -9px 17px #ffffff;
         display: flex;
         align-items: center;
         justify-content: center;
