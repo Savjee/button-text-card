@@ -57,9 +57,14 @@ title: Only title
 icon: 'mdi:format-title'
 ```
 
-**Support for templating**
+## Templating
 
-You can use templates in title, subtitle and even for the icon: 
+Templating is supported in the `title`, `subtitle` and `icon` parameters.
+
+*Note:* Jinja2 templates are **NOT** supported. Instead, we use Javascript as templating languages like [button-card](https://github.com/custom-cards/button-card).
+
+This means there is almost no performance impact on your Home Assistant installation. It does, however, mean that you have to learn some Javascript.
+
 <div align="center">
     <img src="https://savjee.github.io/button-text-card/example-3.png">
 </div>
@@ -67,13 +72,19 @@ You can use templates in title, subtitle and even for the icon:
 ```yaml
 type: 'custom:button-text-card'
 icon: >
-  {% if states.person | selectattr('state', 'eq', 'home') | count | int == 0 %} 
-    mdi:home-export-outline 
-  {% else %} 
-    mdi:home-import-outline 
-  {% endif %}
-title: >
-  People home: 
-    {{ states.person | selectattr('state', 'eq', 'home') | list | count | int }}
+  [[[
+    const count = Object.entries(states).filter(e => e[0].indexOf('person.') === 0 && e[1].state === "home").length;
+
+    if(count === 0){
+      return "mdi:home-export-outline";
+    }else{
+      return "mdi:home-import-outline";
+    }
+  ]]]
+title: |
+  [[[
+    const count = Object.entries(states).filter(e => e[0].indexOf('person.') === 0 && e[1].state === "home").length;
+    return "People home: " + count;
+  ]]]
 subtitle: Support for templating!
 ```

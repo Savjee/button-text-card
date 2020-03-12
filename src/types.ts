@@ -13,10 +13,10 @@ export interface BoilerplateCardConfig {
   double_tap_action?: ActionConfig;
 
   // Xavier
-  title?: string;
+  title: string;
   _rendered_title?: string;
-  icon?: string;
+  icon: string;
   _rendered_icon?: string;
-  subtitle?: string | boolean;
-  _rendered_subtitle?: string | boolean;
+  subtitle: string;
+  _rendered_subtitle?: string;
 }

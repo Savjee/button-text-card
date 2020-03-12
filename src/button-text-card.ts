@@ -10,6 +10,7 @@ import {
 import { BoilerplateCardConfig } from './types';
 import { actionHandler } from './action-handler-directive';
 import { CARD_VERSION } from './const';
+import { HassEntity } from 'home-assistant-js-websocket';
 
 /* eslint no-console: 0 */
 console.info(
@@ -23,7 +24,11 @@ export class BoilerplateCard extends LitElement {
   @property() public hass?: HomeAssistant;
   @property() private _config?: BoilerplateCardConfig;
 
-  private lastUpdate = 0;
+  @property() private _hasTemplate = false;
+  @property() private _stateObj: HassEntity | undefined;
+
+  private static templateFields = ['title', 'subtitle', 'icon'];
+  private static templateRegex = new RegExp('\\[\\[\\[(.*)\\]\\]\\]', 'gms');
 
   public setConfig(config: BoilerplateCardConfig): void {
     // TODO Check for required fields and that they are of the proper format
@@ -37,43 +42,42 @@ export class BoilerplateCard extends LitElement {
       subtitle: '',
       ...config,
     };
+
+    // Check if there is a template in a field
+    for (const field of BoilerplateCard.templateFields) {
+      const regResult = BoilerplateCard.templateRegex.exec(this._config[field]);
+      BoilerplateCard.templateRegex.lastIndex = 0;
+      if (regResult !== null) {
+        this._hasTemplate = true;
+        break;
+      }
+    }
   }
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
-    if (hasConfigOrEntityChanged(this, changedProps, false) === false) {
-      return false;
-    }
-
-    if (this._config) {
-      const config = this._config;
-      const templateSupport = ['title', 'subtitle', 'icon'];
-      const promises = templateSupport.map(el => this._renderTemplate(config[el]));
-
-      Promise.all(promises).then(renderedTemplates => {
-        let updated = false;
-
-        for (let i = 0; i < templateSupport.length; i++) {
-          const key = '_rendered_' + templateSupport[i];
-          const newValue = renderedTemplates[i];
-
-          if (config[key] !== newValue) {
-            updated = true;
-            config[key] = renderedTemplates[i];
-          }
-        }
-
-        if (updated) {
-          this.setConfig(config);
-        }
-      });
-    }
-
-    return hasConfigOrEntityChanged(this, changedProps, false);
+    return hasConfigOrEntityChanged(this, changedProps, this._hasTemplate);
   }
 
   protected render(): TemplateResult | void {
+    console.log('card', 'render');
     if (!this._config || !this.hass) {
       return html``;
+    }
+
+    this._stateObj = this._config.entity ? this.hass.states[this._config.entity] : undefined;
+
+    // Render templates
+    for (const field of BoilerplateCard.templateFields) {
+      const regMatches = BoilerplateCard.templateRegex.exec(this._config[field]);
+      BoilerplateCard.templateRegex.lastIndex = 0;
+
+      const storeKey = '_rendered_' + field;
+
+      if (regMatches && regMatches.length > 1) {
+        this._config[storeKey] = this._evalTemplate(this._stateObj, regMatches[1]);
+      } else {
+        this._config[storeKey] = this._config[field];
+      }
     }
 
     // If no icon was set by the user, try fetching one from HA
@@ -124,32 +128,24 @@ export class BoilerplateCard extends LitElement {
     }
   }
 
-  private _renderTemplate(template: string | undefined): Promise<string> {
-    return new Promise(resolve => {
-      if (!template) {
-        return resolve('');
-      }
-      if (template.indexOf('{') == -1) {
-        return resolve(template);
-      }
+  /**
+   * Renders a Javascript template
+   * Credit: https://github.com/custom-cards/button-card
+   */
+  private _evalTemplate(state: HassEntity | undefined, func: any): any {
+    if (!this.hass) {
+      return '';
+    }
 
-      if (this.hass) {
-        this.hass.connection.subscribeMessage(
-          (output: any) => {
-            if (output.result !== null) {
-              return resolve(output.result || '');
-            } else {
-              return resolve('Could not render template');
-            }
-          },
-
-          {
-            type: 'render_template',
-            template: template,
-          },
-        );
-      }
-    });
+    /* eslint no-new-func: 0 */
+    return new Function('states', 'entity', 'user', 'hass', 'variables', `'use strict'; ${func}`).call(
+      this,
+      this.hass.states,
+      state,
+      this.hass.user,
+      this.hass,
+      [],
+    );
   }
 
   static get styles(): CSSResult {
