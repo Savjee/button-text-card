@@ -24,7 +24,7 @@ Custom, "neumorphism" card for Home Assistant with support for templating.
 * [Configuration options](#configuration-options)
 * [Examples](#examples)
 * [Templating](#templating)
-* [License & Contributions](#license-&-contributions)
+* [License & Contributions](#license--contributions)
 
 # Installation instructions
 
