@@ -20,6 +20,9 @@ export interface BoilerplateCardConfig {
   subtitle: string;
   _rendered_subtitle?: string;
 
+  hide_condition: string;
+  _rendered_hide_condition?: boolean;
+
   large: boolean;
   background_color?: string;
   font_color?: string;

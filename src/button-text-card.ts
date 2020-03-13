@@ -27,7 +27,7 @@ export class BoilerplateCard extends LitElement {
   @property() private _hasTemplate = false;
   @property() private _stateObj: HassEntity | undefined;
 
-  private static templateFields = ['title', 'subtitle', 'icon'];
+  private static templateFields = ['title', 'subtitle', 'icon', 'hide_condition'];
   private static templateRegex = new RegExp('\\[\\[\\[(.*)\\]\\]\\]', 'gms');
 
   public setConfig(config: BoilerplateCardConfig): void {
@@ -80,6 +80,10 @@ export class BoilerplateCard extends LitElement {
       }
     }
 
+    if (!this._inEditMode() && this._config._rendered_hide_condition === true) {
+      return html``;
+    }
+
     // If no icon was set by the user, try fetching one from HA
     if (!this._config.icon || this._config.icon === '') {
       let icon = 'mdi:alert-circle';
@@ -114,6 +118,7 @@ export class BoilerplateCard extends LitElement {
           hasDoubleTap: hasAction(this._config.double_tap_action),
           repeat: this._config.hold_action ? this._config.hold_action.repeat : undefined,
         })}
+        class="${this._inEditMode() && this._config._rendered_hide_condition === true ? 'edit-preview' : ''}"
         tabindex="0"
       >
         <div class="flex-container ${this._config.large === true ? 'card-look' : ''}">
@@ -136,6 +141,21 @@ export class BoilerplateCard extends LitElement {
     }
   }
 
+  private _inEditMode(): boolean {
+    const el = document
+      .querySelector('home-assistant')
+      ?.shadowRoot?.querySelector('home-assistant-main')
+      ?.shadowRoot?.querySelector('app-drawer-layout partial-panel-resolver ha-panel-lovelace')
+      ?.shadowRoot?.querySelector('hui-root')
+      ?.shadowRoot?.querySelector('ha-app-layout app-header');
+
+    if (el) {
+      return el.classList.contains('edit-mode');
+    }
+
+    return false;
+  }
+
   /**
    * Renders a Javascript template
    * Credit: https://github.com/custom-cards/button-card
@@ -156,12 +176,21 @@ export class BoilerplateCard extends LitElement {
     );
   }
 
+  // app-toolbar edit-mode
+  /*
+    document.querySelector('home-assistant').shadowRoot.querySelector('home-assistant-main').shadowRoot.querySelector('app-drawer-layout partial-panel-resolver ha-panel-lovelace').shadowRoot.querySelector('hui-root').shadowRoot.querySelector('ha-app-layout app-header').classList.contains('edit-mode');
+  */
+
   static get styles(): CSSResult {
     return css`
       ha-card {
         --paper-card-background-color: 'rgba(11, 11, 11, 0.00)';
         box-shadow: 2px 2px rgba(0, 0, 0, 0);
         padding: 16px;
+      }
+
+      ha-card.edit-preview {
+        opacity: 0.5;
       }
       .warning {
         display: block;
