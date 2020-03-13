@@ -19,9 +19,16 @@
 
 Custom, "neumorphism" card for Home Assistant with support for templating.
 
-# Install
+# Table of contents
+* [Installation instructions](#installation-instructions)
+* [Configuration options](#configuration-options)
+* [Examples](#examples)
+* [Templating](#templating)
+* [License & Contributions](#license-&-contributions)
 
-1. Open HACS
+# Installation instructions
+
+1. Open [HACS](https://hacs.xyz/)
 2. Go to Settings > Custom Repository
 3. Add `git@github.com:Savjee/button-text-card.git` as plugin
 4. Install it
@@ -31,6 +38,20 @@ Custom, "neumorphism" card for Home Assistant with support for templating.
   - url: /community_plugin/button-text-card/button-text-card.js
     type: module
 ```
+
+# Configuration options
+| Name             | Type    | Requirement | Description                                                  | Default            |
+|------------------|---------|-------------|--------------------------------------------------------------|--------------------|
+| type             | string  | required    | `custom:button-text-card`                                    | n/a                |
+| entity           | string  | optional    | Which entity state you want to use in your card (templating) |                    |
+| icon             | string  | optional    | Custom icon for the card                                     | `mdi:alert-circle` |
+| title            | string  | optional    |                                                              |                    |
+| subtitle         | string  | optional    |                                                              |                    |
+| large            | boolean | optional    | Large cards have a full-width container                      | `false`            |
+| font_color       | string  | optional    | CSS colorcode for the text                                   | Defined by theme   |
+| background_color | string  | optional    | CSS color for the background of the badge                    | Defined by theme   |
+| hide_condition   | string  | optional    | Javascript template that defines if card should be hidden    | `false`            |
+
 
 # Examples
 
@@ -57,14 +78,43 @@ title: Only title
 icon: 'mdi:format-title'
 ```
 
-## Templating
+**Large card**
+<div align="center">
+    <img src="https://savjee.github.io/button-text-card/example-4.png">
+</div>
 
-Templating is supported in the `title`, `subtitle` and `icon` parameters.
+```yaml
+type: 'custom:button-text-card'
+title: Large version
+subtitle: Ideal for important messages
+icon: 'mdi:battery-high'
+large: true
+```
 
-*Note:* Jinja2 templates are **NOT** supported. Instead, we use Javascript as templating languages like [button-card](https://github.com/custom-cards/button-card).
+**Custom background & font colors**
+<div align="center">
+    <img src="https://savjee.github.io/button-text-card/example-5.png">
+</div>
 
-This means there is almost no performance impact on your Home Assistant installation. It does, however, mean that you have to learn some Javascript.
+```yaml
+type: 'custom:button-text-card'
+title: Warning!
+subtitle: Draw attention with custom colors
+icon: 'mdi:comment-alert'
+large: true
+font_color: '#fff'
+background_color: '#A81419'
+```
 
+# Templating
+
+For templating, we do **NOT** support Jinja2. Instead we opted to use Javascript as templating language (like [button-card](https://github.com/custom-cards/button-card)). 
+
+Templating is supported in most fields (see [options](#options) for more details). Since these templates are executed in the front-end, there is no impact on the performance of your Home Assistant installation. It does, however, mean that you have to learn some Javascript.
+
+Templates are enclosed by tripple brackets and can contain any valid Javascript: `[[[ return "Hello from Javascript!" ]]]`
+
+**Example: counting people home**
 <div align="center">
     <img src="https://savjee.github.io/button-text-card/example-3.png">
 </div>
@@ -88,3 +138,8 @@ title: |
   ]]]
 subtitle: Support for templating!
 ```
+
+# License & contributions
+See [LICENSE](/LICENSE)
+
+Feel free to suggest improvements, flag issues, open pull requests, ...
