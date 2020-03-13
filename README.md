@@ -26,6 +26,8 @@ Custom, "neumorphism" card for Home Assistant with support for templating.
 * [Templating](#templating)
 * [License & Contributions](#license--contributions)
 
+---
+
 # Installation instructions
 
 1. Open [HACS](https://hacs.xyz/)
