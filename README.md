@@ -32,7 +32,7 @@ Custom, "neumorphism" card for Home Assistant with support for templating.
 
 1. Open [HACS](https://hacs.xyz/)
 2. Go to Settings > Custom Repository
-3. Add `git@github.com:Savjee/button-text-card.git` as plugin
+3. Add `https://github.com/Savjee/button-text-card` as plugin
 4. Install it
 5. Add to your Lovelace config:
 
@@ -140,6 +140,10 @@ title: |
   ]]]
 subtitle: Support for templating!
 ```
+
+# TODO
+* Document tap_action support
+* Document conditional hidding
 
 # License & contributions
 See [LICENSE](/LICENSE)
