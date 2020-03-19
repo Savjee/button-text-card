@@ -3315,7 +3315,7 @@ let BoilerplateCard = BoilerplateCard_1 = class BoilerplateCard extends LitEleme
     }
 };
 BoilerplateCard.templateFields = ['title', 'subtitle', 'icon', 'hide_condition'];
-BoilerplateCard.templateRegex = new RegExp('\\[\\[\\[(.*)\\]\\]\\]', 'gms');
+BoilerplateCard.templateRegex = new RegExp('\\[\\[\\[([^]*)\\]\\]\\]', 'gm');
 __decorate([
     property()
 ], BoilerplateCard.prototype, "hass", void 0);

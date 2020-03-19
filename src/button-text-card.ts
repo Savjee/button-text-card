@@ -28,7 +28,7 @@ export class BoilerplateCard extends LitElement {
   @property() private _stateObj: HassEntity | undefined;
 
   private static templateFields = ['title', 'subtitle', 'icon', 'hide_condition'];
-  private static templateRegex = new RegExp('\\[\\[\\[(.*)\\]\\]\\]', 'gms');
+  private static templateRegex = new RegExp('\\[\\[\\[([^]*)\\]\\]\\]', 'gm');
 
   public setConfig(config: BoilerplateCardConfig): void {
     // TODO Check for required fields and that they are of the proper format
