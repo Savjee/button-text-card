@@ -141,9 +141,53 @@ title: |
 subtitle: Support for templating!
 ```
 
+# Conditional hiding
+You can use a Javascript template to dynamically hide a card. This can be useful to create contextual cards (eg: only show when the front door is open, when there are lights on, ...).
+
+To do so, write a Javascript template in the `hide_condition` attribute and return `true` if the card should be hidden.
+
+
+**Example: Only show card when music is playing**
+<div align="center">
+    <img src="https://savjee.github.io/button-text-card/example-6.png">
+</div>
+
+```yaml
+type: 'custom:button-text-card'
+title: There is music playing
+icon: 'mdi:music-circle'
+hide_condition: |
+  [[[
+    const active_players = Object.entries(states).filter(e => e[0].indexOf('media_player.')===0 && e[1].state === 'playing');
+    return active_players.length === 0;
+  ]]]
+```
+
+Cool feature: when you go into edit mode, all hidden cards will appear with an opacity of 50%. That way you can easily manage all your cards.
+
+<div align="center">
+    <img src="https://savjee.github.io/button-text-card/example-6a.png">
+</div>
+
+**Example: Only show card when the front door is open**
+<div align="center">
+    <img src="https://savjee.github.io/button-text-card/example-7.png">
+</div>
+
+```
+type: 'custom:button-text-card'
+large: true
+entity: binary_sensor.voordeur
+title: Front door open!
+background_color: '#A81419'
+font_color: '#fff'
+icon: 'mdi:door-open'
+hide_condition: |
+  [[[ return entity.state === "off" ]]]
+```
+
 # TODO
 * Document tap_action support
-* Document conditional hidding
 
 # License & contributions
 See [LICENSE](/LICENSE)
