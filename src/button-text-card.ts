@@ -209,7 +209,7 @@ export class BoilerplateCard extends LitElement {
       .card-look {
         border-radius: 16px;
         background-color: var(--primary-background-color);
-        box-shadow: 9px 9px 17px #c8c8c8, -9px -9px 17px #ffffff;
+        box-shadow: var(--ha-card-box-shadow, 9px 9px 17px #c8c8c8, -9px -9px 17px #ffffff);
       }
 
       .icon-container {
