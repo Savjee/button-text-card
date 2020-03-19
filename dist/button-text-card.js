@@ -3145,6 +3145,12 @@ let BoilerplateCard = BoilerplateCard_1 = class BoilerplateCard extends LitEleme
         }
     }
     shouldUpdate(changedProps) {
+        var _a;
+        // Always render the card when there is no entity
+        if (!((_a = this._config) === null || _a === void 0 ? void 0 : _a.entity)) {
+            return true;
+        }
+        // If there is an entity, update the card only when it changed state
         return H(this, changedProps, this._hasTemplate);
     }
     render() {

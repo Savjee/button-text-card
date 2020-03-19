@@ -56,6 +56,12 @@ export class BoilerplateCard extends LitElement {
   }
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
+    // Always render the card when there is no entity
+    if (!this._config?.entity) {
+      return true;
+    }
+
+    // If there is an entity, update the card only when it changed state
     return hasConfigOrEntityChanged(this, changedProps, this._hasTemplate);
   }
 
