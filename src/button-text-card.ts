@@ -23,6 +23,7 @@ console.info(
 export class BoilerplateCard extends LitElement {
   @property() public hass?: HomeAssistant;
   @property() private _config?: BoilerplateCardConfig;
+  private _renderedConfig?: BoilerplateCardConfig;
 
   @property() private _hasTemplate = false;
   @property() private _stateObj: HassEntity | undefined;
@@ -43,6 +44,9 @@ export class BoilerplateCard extends LitElement {
       large: false,
       ...config,
     };
+
+    // Make a copy of the config so we can render any templates
+    this._renderedConfig = JSON.parse(JSON.stringify(this._config));
 
     // Check if there is a template in a field
     for (const field of BoilerplateCard.templateFields) {
@@ -65,6 +69,23 @@ export class BoilerplateCard extends LitElement {
     return hasConfigOrEntityChanged(this, changedProps, this._hasTemplate);
   }
 
+  protected evaluateJsTemplates(): void {
+    if (!this._renderedConfig || !this._config) {
+      return;
+    }
+
+    for (const field of BoilerplateCard.templateFields) {
+      const regMatches = BoilerplateCard.templateRegex.exec(this._config[field]);
+      BoilerplateCard.templateRegex.lastIndex = 0;
+
+      if (regMatches && regMatches.length > 1) {
+        this._renderedConfig[field] = this._evalTemplate(this._stateObj, regMatches[1]);
+      } else {
+        this._renderedConfig[field] = this._config[field];
+      }
+    }
+  }
+
   protected render(): TemplateResult | void {
     if (!this._config || !this.hass) {
       return html``;
@@ -72,21 +93,10 @@ export class BoilerplateCard extends LitElement {
 
     this._stateObj = this._config.entity ? this.hass.states[this._config.entity] : undefined;
 
-    // Render templates
-    for (const field of BoilerplateCard.templateFields) {
-      const regMatches = BoilerplateCard.templateRegex.exec(this._config[field]);
-      BoilerplateCard.templateRegex.lastIndex = 0;
+    // Render JS templates
+    this.evaluateJsTemplates();
 
-      const storeKey = '_rendered_' + field;
-
-      if (regMatches && regMatches.length > 1) {
-        this._config[storeKey] = this._evalTemplate(this._stateObj, regMatches[1]);
-      } else {
-        this._config[storeKey] = this._config[field];
-      }
-    }
-
-    if (!this._inEditMode() && this._config._rendered_hide_condition === true) {
+    if (!this._inEditMode() && this._renderedConfig?.hide_condition === 'true') {
       return html``;
     }
 
@@ -124,17 +134,17 @@ export class BoilerplateCard extends LitElement {
           hasDoubleTap: hasAction(this._config.double_tap_action),
           repeat: this._config.hold_action ? this._config.hold_action.repeat : undefined,
         })}
-        class="${this._inEditMode() && this._config._rendered_hide_condition === true ? 'edit-preview' : ''}"
+        class="${this._inEditMode() && this._renderedConfig?.hide_condition === 'true' ? 'edit-preview' : ''}"
         tabindex="0"
       >
         <div class="flex-container ${this._config.large === true ? 'card-look' : ''}">
           <div class="icon-container ${this._config.large === false ? 'card-look' : ''}">
-            <ha-icon icon="${this._config._rendered_icon}"></ha-icon>
+            <ha-icon icon="${this._renderedConfig?.icon}"></ha-icon>
           </div>
 
           <div class="text-container">
-            <h1>${this._config._rendered_title}</h1>
-            <p class="${this._config._rendered_subtitle === '' ? 'hidden' : ''}">${this._config._rendered_subtitle}</p>
+            <h1>${this._renderedConfig?.title}</h1>
+            <p class="${this._renderedConfig?.subtitle === '' ? 'hidden' : ''}">${this._renderedConfig?.subtitle}</p>
           </div>
         </div>
       </ha-card>
