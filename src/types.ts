@@ -15,6 +15,7 @@ export interface BoilerplateCardConfig {
   // Specific for button-text-card
   title: string;
   icon: string;
+  icon_color: string;
   subtitle: string;
   hide_condition: string;
   background_color?: string;

@@ -135,6 +135,8 @@ export class BoilerplateCard extends LitElement {
       this.style.setProperty('--primary-text-color', this._renderedConfig.font_color);
     }
 
+    this._configureIconColor();
+
     return html`
       <ha-card
         @action=${this._handleAction}
@@ -164,6 +166,42 @@ export class BoilerplateCard extends LitElement {
     if (this.hass && this._config && ev.detail.action) {
       handleAction(this, this.hass, this._config, ev.detail.action);
     }
+  }
+
+  /**
+   * Handles the icon color. Three possible situations:
+   *
+   * 1) User didn't set icon_color -> we use the theme's text
+   *    color as icon color.
+   *
+   * 2) User set icon_color to "auto" -> We color the icon if the
+   *    attached entity has the "on" state. Color is defined by
+   *    --paper-item-icon-active-color
+   *
+   * 3) icon_color is not defined but user did specify font_color
+   *    -> We use the font-color as icon_color as well
+   *
+   * 4) icon_color is set to anything but "auto" -> we use that value
+   *    as CSS color code.
+   */
+  private _configureIconColor(): void {
+    if (this._renderedConfig?.icon_color && this._renderedConfig.icon_color !== 'auto') {
+      this.style.setProperty('--icon-color', this._renderedConfig.icon_color);
+      return;
+    }
+
+    if (this._renderedConfig?.icon_color === 'auto' && this._stateObj?.state === 'on') {
+      this.style.setProperty('--icon-color', 'var(--paper-item-icon-active-color)');
+      return;
+    }
+
+    if (!this._renderedConfig?.icon_color && this._renderedConfig?.font_color) {
+      this.style.setProperty('--icon-color', this._renderedConfig.font_color);
+      return;
+    }
+
+    // If we get here, use the default text color
+    this.style.setProperty('--icon-color', 'var(--primary-text-color)');
   }
 
   private _inEditMode(): boolean {
@@ -245,11 +283,11 @@ export class BoilerplateCard extends LitElement {
         align-items: center;
         justify-content: center;
       }
-      .icon-container ha-icon,
       .text-container {
         color: var(--primary-text-color);
       }
       .icon-container ha-icon {
+        color: var(--icon-color);
         width: 33px;
         height: 33px;
       }
