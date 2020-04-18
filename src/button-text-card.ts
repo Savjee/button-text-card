@@ -28,7 +28,17 @@ export class BoilerplateCard extends LitElement {
   @property() private _hasTemplate = false;
   @property() private _stateObj: HassEntity | undefined;
 
-  private static templateFields = ['title', 'subtitle', 'icon', 'hide_condition', 'font_color', 'background_color'];
+  private static templateFields = [
+    'title',
+    'subtitle',
+    'icon',
+    'hide_condition',
+    'font_color',
+    'background_color',
+    'shadow_color',
+    'large',
+  ];
+
   private static templateRegex = new RegExp('\\[\\[\\[([^]*)\\]\\]\\]', 'gm');
 
   public setConfig(config: BoilerplateCardConfig): void {
@@ -46,7 +56,7 @@ export class BoilerplateCard extends LitElement {
     };
 
     // Make a copy of the config so we can render any templates
-    this._renderedConfig = JSON.parse(JSON.stringify(this._config));
+    this._renderedConfig = Object.assign({}, this._config);
 
     // Check if there is a template in a field
     for (const field of BoilerplateCard.templateFields) {
@@ -87,7 +97,7 @@ export class BoilerplateCard extends LitElement {
   }
 
   protected render(): TemplateResult | void {
-    if (!this._config || !this.hass) {
+    if (!this._config || !this.hass || !this._renderedConfig) {
       return html``;
     }
 
@@ -96,7 +106,7 @@ export class BoilerplateCard extends LitElement {
     // Render JS templates
     this.evaluateJsTemplates();
 
-    if (!this._inEditMode() && this._renderedConfig?.hide_condition === 'true') {
+    if (!this._inEditMode() && this._renderedConfig.hide_condition === 'true') {
       return html``;
     }
 
@@ -117,11 +127,11 @@ export class BoilerplateCard extends LitElement {
       });
     }
 
-    if (this._renderedConfig?.background_color) {
+    if (this._renderedConfig.background_color) {
       this.style.setProperty('--primary-background-color', this._renderedConfig.background_color);
     }
 
-    if (this._renderedConfig?.font_color) {
+    if (this._renderedConfig.font_color) {
       this.style.setProperty('--primary-text-color', this._renderedConfig.font_color);
     }
 
@@ -133,17 +143,17 @@ export class BoilerplateCard extends LitElement {
           hasDoubleTap: hasAction(this._config.double_tap_action),
           repeat: this._config.hold_action ? this._config.hold_action.repeat : undefined,
         })}
-        class="${this._inEditMode() && this._renderedConfig?.hide_condition === 'true' ? 'edit-preview' : ''}"
+        class="${this._inEditMode() && this._renderedConfig.hide_condition === 'true' ? 'edit-preview' : ''}"
         tabindex="0"
       >
-        <div class="flex-container ${this._config.large === true ? 'card-look' : ''}">
-          <div class="icon-container ${this._config.large === false ? 'card-look' : ''}">
-            <ha-icon icon="${this._renderedConfig?.icon}"></ha-icon>
+        <div class="flex-container ${this._renderedConfig.large === true ? 'card-look' : ''}">
+          <div class="icon-container ${this._renderedConfig.large === false ? 'card-look' : ''}">
+            <ha-icon icon="${this._renderedConfig.icon}"></ha-icon>
           </div>
 
           <div class="text-container">
-            <h1>${this._renderedConfig?.title}</h1>
-            <p class="${this._renderedConfig?.subtitle === '' ? 'hidden' : ''}">${this._renderedConfig?.subtitle}</p>
+            <h1>${this._renderedConfig.title}</h1>
+            <p class="${this._renderedConfig.subtitle === '' ? 'hidden' : ''}">${this._renderedConfig.subtitle}</p>
           </div>
         </div>
       </ha-card>

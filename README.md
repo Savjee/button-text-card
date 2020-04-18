@@ -43,17 +43,17 @@ Custom, "neumorphism" card for Home Assistant with support for templating.
 ```
 
 # Configuration options
-| Name             | Type    | Requirement | Description                                                  | Default            |
-|------------------|---------|-------------|--------------------------------------------------------------|--------------------|
-| type             | string  | required    | `custom:button-text-card`                                    | n/a                |
-| entity           | string  | optional    | Which entity state you want to use in your card (templating) |                    |
-| icon             | string  | optional    | Custom icon for the card                                     | `mdi:alert-circle` |
-| title            | string  | optional    |                                                              |                    |
-| subtitle         | string  | optional    |                                                              |                    |
-| large            | boolean | optional    | Large cards have a full-width container                      | `false`            |
-| font_color       | string  | optional    | CSS colorcode for the text                                   | Defined by theme   |
-| background_color | string  | optional    | CSS color for the background of the badge                    | Defined by theme   |
-| hide_condition   | string  | optional    | Javascript template that defines if card should be hidden    | `false`            |
+| Name             | Type    | Requirement | Description                                                  | Default            | Template support? |
+|------------------|---------|-------------|--------------------------------------------------------------|--------------------|-------------------|
+| type             | string  | required    | `custom:button-text-card`                                    | n/a                | No                |
+| entity           | string  | optional    | Which entity state you want to use in your card (templating) |                    | No                |
+| icon             | string  | optional    | Custom icon for the card                                     | `mdi:alert-circle` | Yes               |
+| title            | string  | optional    |                                                              |                    | Yes               |
+| subtitle         | string  | optional    |                                                              |                    | Yes               |
+| large            | boolean | optional    | Large cards have a full-width container                      | `false`            | Yes               |
+| font_color       | string  | optional    | CSS colorcode for the text                                   | Defined by theme   | Yes               |
+| background_color | string  | optional    | CSS color for the background of the badge                    | Defined by theme   | Yes               |
+| hide_condition   | string  | optional    | Javascript template that defines if card should be hidden    | `false`            | Yes               |
 
 
 # Examples
