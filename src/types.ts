@@ -12,18 +12,12 @@ export interface BoilerplateCardConfig {
   hold_action?: ActionConfig;
   double_tap_action?: ActionConfig;
 
-  // Xavier
+  // Specific for button-text-card
   title: string;
-  _rendered_title?: string;
   icon: string;
-  _rendered_icon?: string;
   subtitle: string;
-  _rendered_subtitle?: string;
-
   hide_condition: string;
-  _rendered_hide_condition?: boolean;
-
-  large: boolean;
   background_color?: string;
+  large: boolean;
   font_color?: string;
 }
