@@ -204,6 +204,10 @@ export class BoilerplateCard extends LitElement {
     this.style.setProperty('--icon-color', 'var(--primary-text-color)');
   }
 
+  /**
+   * Returns true if Lovelace is in edit mode. This is quite hacky and might easily
+   * break in future Lovelace versions. Unfortunately there isn't a better way atm.
+   */
   private _inEditMode(): boolean {
     const el = document
       .querySelector('home-assistant')
@@ -238,11 +242,6 @@ export class BoilerplateCard extends LitElement {
       [],
     );
   }
-
-  // app-toolbar edit-mode
-  /*
-    document.querySelector('home-assistant').shadowRoot.querySelector('home-assistant-main').shadowRoot.querySelector('app-drawer-layout partial-panel-resolver ha-panel-lovelace').shadowRoot.querySelector('hui-root').shadowRoot.querySelector('ha-app-layout app-header').classList.contains('edit-mode');
-  */
 
   static get styles(): CSSResult {
     return css`
