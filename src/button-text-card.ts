@@ -28,7 +28,7 @@ export class BoilerplateCard extends LitElement {
   @property() private _hasTemplate = false;
   @property() private _stateObj: HassEntity | undefined;
 
-  private static templateFields = ['title', 'subtitle', 'icon', 'hide_condition'];
+  private static templateFields = ['title', 'subtitle', 'icon', 'hide_condition', 'font_color', 'background_color'];
   private static templateRegex = new RegExp('\\[\\[\\[([^]*)\\]\\]\\]', 'gm');
 
   public setConfig(config: BoilerplateCardConfig): void {
@@ -114,16 +114,15 @@ export class BoilerplateCard extends LitElement {
       this.setConfig({
         ...this._config,
         icon: icon,
-        _rendered_icon: icon,
       });
     }
 
-    if (this._config.background_color) {
-      this.style.setProperty('--primary-background-color', this._config.background_color);
+    if (this._renderedConfig?.background_color) {
+      this.style.setProperty('--primary-background-color', this._renderedConfig.background_color);
     }
 
-    if (this._config.font_color) {
-      this.style.setProperty('--primary-text-color', this._config.font_color);
+    if (this._renderedConfig?.font_color) {
+      this.style.setProperty('--primary-text-color', this._renderedConfig.font_color);
     }
 
     return html`
