@@ -37,6 +37,7 @@ export class BoilerplateCard extends LitElement {
     'background_color',
     'shadow_color',
     'large',
+    'spin',
   ];
 
   private static templateRegex = new RegExp('\\[\\[\\[([^]*)\\]\\]\\]', 'gm');
@@ -150,7 +151,10 @@ export class BoilerplateCard extends LitElement {
       >
         <div class="flex-container ${this._renderedConfig.large === true ? 'card-look' : ''}">
           <div class="icon-container ${this._renderedConfig.large === false ? 'card-look' : ''}">
-            <ha-icon icon="${this._renderedConfig.icon}"></ha-icon>
+            <ha-icon
+              icon="${this._renderedConfig.icon}"
+              class="${this._renderedConfig.spin === true ? 'spin' : ''}"
+            ></ha-icon>
           </div>
 
           <div class="text-container">
@@ -245,6 +249,23 @@ export class BoilerplateCard extends LitElement {
 
   static get styles(): CSSResult {
     return css`
+      @-moz-keyframes spin {
+        100% {
+          -moz-transform: rotate(360deg);
+        }
+      }
+      @-webkit-keyframes spin {
+        100% {
+          -webkit-transform: rotate(360deg);
+        }
+      }
+      @keyframes spin {
+        100% {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+
       ha-card {
         --paper-card-background-color: 'rgba(11, 11, 11, 0.00)';
         box-shadow: 2px 2px rgba(0, 0, 0, 0);
@@ -254,6 +275,7 @@ export class BoilerplateCard extends LitElement {
       ha-card.edit-preview {
         opacity: 0.5;
       }
+
       .warning {
         display: block;
         color: black;
@@ -282,13 +304,21 @@ export class BoilerplateCard extends LitElement {
         align-items: center;
         justify-content: center;
       }
+
       .text-container {
         color: var(--primary-text-color);
       }
+
       .icon-container ha-icon {
         color: var(--icon-color);
         width: 33px;
         height: 33px;
+      }
+
+      .icon-container ha-icon.spin {
+        -webkit-animation: spin 4s linear infinite;
+        -moz-animation: spin 4s linear infinite;
+        animation: spin 4s linear infinite;
       }
 
       .text-container {

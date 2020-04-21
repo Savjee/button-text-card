@@ -55,6 +55,7 @@ Custom, "neumorphism" card for Home Assistant with support for templating.
 | icon_color       | string  | optional    | CSS colorcode or "auto" if you want it to change based on your entity state | Defined by theme   | Yes               |
 | background_color | string  | optional    | CSS color for the background of the badge                                   | Defined by theme   | Yes               |
 | hide_condition   | string  | optional    | Javascript template that defines if card should be hidden                   | `false`            | Yes               |
+| spin             | boolean | optional    | Set to true if you want to icon to spin slowly                              |                    | Yes               |
 
 
 # Examples

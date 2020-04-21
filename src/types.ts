@@ -21,4 +21,5 @@ export interface BoilerplateCardConfig {
   background_color?: string;
   large: boolean;
   font_color?: string;
+  spin?: boolean;
 }
