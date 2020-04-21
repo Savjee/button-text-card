@@ -153,7 +153,7 @@ export class BoilerplateCard extends LitElement {
           <div class="icon-container ${this._renderedConfig.large === false ? 'card-look' : ''}">
             <ha-icon
               icon="${this._renderedConfig.icon}"
-              class="${this._renderedConfig.spin === true ? 'spin' : ''}"
+              class="${this._renderedConfig.icon_animation === 'spin' ? 'spin' : ''}"
             ></ha-icon>
           </div>
 
