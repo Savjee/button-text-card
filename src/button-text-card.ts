@@ -23,11 +23,23 @@ console.info(
 export class BoilerplateCard extends LitElement {
   @property() public hass?: HomeAssistant;
   @property() private _config?: BoilerplateCardConfig;
+  private _renderedConfig?: BoilerplateCardConfig;
 
   @property() private _hasTemplate = false;
   @property() private _stateObj: HassEntity | undefined;
 
-  private static templateFields = ['title', 'subtitle', 'icon', 'hide_condition'];
+  private static templateFields = [
+    'title',
+    'subtitle',
+    'icon',
+    'hide_condition',
+    'font_color',
+    'background_color',
+    'shadow_color',
+    'large',
+    'spin',
+  ];
+
   private static templateRegex = new RegExp('\\[\\[\\[([^]*)\\]\\]\\]', 'gm');
 
   public setConfig(config: BoilerplateCardConfig): void {
@@ -43,6 +55,9 @@ export class BoilerplateCard extends LitElement {
       large: false,
       ...config,
     };
+
+    // Make a copy of the config so we can render any templates
+    this._renderedConfig = Object.assign({}, this._config);
 
     // Check if there is a template in a field
     for (const field of BoilerplateCard.templateFields) {
@@ -65,28 +80,34 @@ export class BoilerplateCard extends LitElement {
     return hasConfigOrEntityChanged(this, changedProps, this._hasTemplate);
   }
 
+  protected evaluateJsTemplates(): void {
+    if (!this._renderedConfig || !this._config) {
+      return;
+    }
+
+    for (const field of BoilerplateCard.templateFields) {
+      const regMatches = BoilerplateCard.templateRegex.exec(this._config[field]);
+      BoilerplateCard.templateRegex.lastIndex = 0;
+
+      if (regMatches && regMatches.length > 1) {
+        this._renderedConfig[field] = this._evalTemplate(this._stateObj, regMatches[1]);
+      } else {
+        this._renderedConfig[field] = this._config[field];
+      }
+    }
+  }
+
   protected render(): TemplateResult | void {
-    if (!this._config || !this.hass) {
+    if (!this._config || !this.hass || !this._renderedConfig) {
       return html``;
     }
 
     this._stateObj = this._config.entity ? this.hass.states[this._config.entity] : undefined;
 
-    // Render templates
-    for (const field of BoilerplateCard.templateFields) {
-      const regMatches = BoilerplateCard.templateRegex.exec(this._config[field]);
-      BoilerplateCard.templateRegex.lastIndex = 0;
+    // Render JS templates
+    this.evaluateJsTemplates();
 
-      const storeKey = '_rendered_' + field;
-
-      if (regMatches && regMatches.length > 1) {
-        this._config[storeKey] = this._evalTemplate(this._stateObj, regMatches[1]);
-      } else {
-        this._config[storeKey] = this._config[field];
-      }
-    }
-
-    if (!this._inEditMode() && this._config._rendered_hide_condition === true) {
+    if (!this._inEditMode() && this._renderedConfig.hide_condition === 'true') {
       return html``;
     }
 
@@ -104,17 +125,18 @@ export class BoilerplateCard extends LitElement {
       this.setConfig({
         ...this._config,
         icon: icon,
-        _rendered_icon: icon,
       });
     }
 
-    if (this._config.background_color) {
-      this.style.setProperty('--primary-background-color', this._config.background_color);
+    if (this._renderedConfig.background_color) {
+      this.style.setProperty('--primary-background-color', this._renderedConfig.background_color);
     }
 
-    if (this._config.font_color) {
-      this.style.setProperty('--primary-text-color', this._config.font_color);
+    if (this._renderedConfig.font_color) {
+      this.style.setProperty('--primary-text-color', this._renderedConfig.font_color);
     }
+
+    this._configureIconColor();
 
     return html`
       <ha-card
@@ -124,17 +146,20 @@ export class BoilerplateCard extends LitElement {
           hasDoubleTap: hasAction(this._config.double_tap_action),
           repeat: this._config.hold_action ? this._config.hold_action.repeat : undefined,
         })}
-        class="${this._inEditMode() && this._config._rendered_hide_condition === true ? 'edit-preview' : ''}"
+        class="${this._inEditMode() && this._renderedConfig.hide_condition === 'true' ? 'edit-preview' : ''}"
         tabindex="0"
       >
-        <div class="flex-container ${this._config.large === true ? 'card-look' : ''}">
-          <div class="icon-container ${this._config.large === false ? 'card-look' : ''}">
-            <ha-icon icon="${this._config._rendered_icon}"></ha-icon>
+        <div class="flex-container ${this._renderedConfig.large === true ? 'card-look' : ''}">
+          <div class="icon-container ${this._renderedConfig.large === false ? 'card-look' : ''}">
+            <ha-icon
+              icon="${this._renderedConfig.icon}"
+              class="${this._renderedConfig.spin === true ? 'spin' : ''}"
+            ></ha-icon>
           </div>
 
           <div class="text-container">
-            <h1>${this._config._rendered_title}</h1>
-            <p class="${this._config._rendered_subtitle === '' ? 'hidden' : ''}">${this._config._rendered_subtitle}</p>
+            <h1>${this._renderedConfig.title}</h1>
+            <p class="${this._renderedConfig.subtitle === '' ? 'hidden' : ''}">${this._renderedConfig.subtitle}</p>
           </div>
         </div>
       </ha-card>
@@ -147,6 +172,46 @@ export class BoilerplateCard extends LitElement {
     }
   }
 
+  /**
+   * Handles the icon color. Three possible situations:
+   *
+   * 1) User didn't set icon_color -> we use the theme's text
+   *    color as icon color.
+   *
+   * 2) User set icon_color to "auto" -> We color the icon if the
+   *    attached entity has the "on" state. Color is defined by
+   *    --paper-item-icon-active-color
+   *
+   * 3) icon_color is not defined but user did specify font_color
+   *    -> We use the font-color as icon_color as well
+   *
+   * 4) icon_color is set to anything but "auto" -> we use that value
+   *    as CSS color code.
+   */
+  private _configureIconColor(): void {
+    if (this._renderedConfig?.icon_color && this._renderedConfig.icon_color !== 'auto') {
+      this.style.setProperty('--icon-color', this._renderedConfig.icon_color);
+      return;
+    }
+
+    if (this._renderedConfig?.icon_color === 'auto' && this._stateObj?.state === 'on') {
+      this.style.setProperty('--icon-color', 'var(--paper-item-icon-active-color)');
+      return;
+    }
+
+    if (!this._renderedConfig?.icon_color && this._renderedConfig?.font_color) {
+      this.style.setProperty('--icon-color', this._renderedConfig.font_color);
+      return;
+    }
+
+    // If we get here, use the default text color
+    this.style.setProperty('--icon-color', 'var(--primary-text-color)');
+  }
+
+  /**
+   * Returns true if Lovelace is in edit mode. This is quite hacky and might easily
+   * break in future Lovelace versions. Unfortunately there isn't a better way atm.
+   */
   private _inEditMode(): boolean {
     const el = document
       .querySelector('home-assistant')
@@ -182,13 +247,25 @@ export class BoilerplateCard extends LitElement {
     );
   }
 
-  // app-toolbar edit-mode
-  /*
-    document.querySelector('home-assistant').shadowRoot.querySelector('home-assistant-main').shadowRoot.querySelector('app-drawer-layout partial-panel-resolver ha-panel-lovelace').shadowRoot.querySelector('hui-root').shadowRoot.querySelector('ha-app-layout app-header').classList.contains('edit-mode');
-  */
-
   static get styles(): CSSResult {
     return css`
+      @-moz-keyframes spin {
+        100% {
+          -moz-transform: rotate(360deg);
+        }
+      }
+      @-webkit-keyframes spin {
+        100% {
+          -webkit-transform: rotate(360deg);
+        }
+      }
+      @keyframes spin {
+        100% {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+
       ha-card {
         --paper-card-background-color: 'rgba(11, 11, 11, 0.00)';
         box-shadow: 2px 2px rgba(0, 0, 0, 0);
@@ -198,6 +275,7 @@ export class BoilerplateCard extends LitElement {
       ha-card.edit-preview {
         opacity: 0.5;
       }
+
       .warning {
         display: block;
         color: black;
@@ -226,13 +304,21 @@ export class BoilerplateCard extends LitElement {
         align-items: center;
         justify-content: center;
       }
-      .icon-container ha-icon,
+
       .text-container {
         color: var(--primary-text-color);
       }
+
       .icon-container ha-icon {
+        color: var(--icon-color);
         width: 33px;
         height: 33px;
+      }
+
+      .icon-container ha-icon.spin {
+        -webkit-animation: spin 4s linear infinite;
+        -moz-animation: spin 4s linear infinite;
+        animation: spin 4s linear infinite;
       }
 
       .text-container {
