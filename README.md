@@ -32,13 +32,12 @@ Custom, "neumorphism" card for Home Assistant with support for templating.
 # Installation instructions
 
 1. Open [HACS](https://hacs.xyz/)
-2. Go to Settings > Custom Repository
-3. Add `https://github.com/Savjee/button-text-card` as plugin
+2. Go to Plugins > Search for "Button Text Card"
 4. Install it
 5. Add to your Lovelace config:
 
 ```yaml
-  - url: /community_plugin/button-text-card/button-text-card.js
+  - url: /hacsfiles/button-text-card/button-text-card.js
     type: module
 ```
 
@@ -55,7 +54,7 @@ Custom, "neumorphism" card for Home Assistant with support for templating.
 | icon_color       | string  | optional    | CSS colorcode or "auto" if you want it to change based on your entity state | Defined by theme   | Yes               |
 | background_color | string  | optional    | CSS color for the background of the badge                                   | Defined by theme   | Yes               |
 | hide_condition   | string  | optional    | Javascript template that defines if card should be hidden                   | `false`            | Yes               |
-| spin             | boolean | optional    | Set to true if you want to icon to spin slowly                              |                    | Yes               |
+| icon_animation   | string  | optional    | Possible values: 'spin'                                                     |                    | Yes               |
 
 
 # Examples

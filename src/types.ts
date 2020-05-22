@@ -17,9 +17,9 @@ export interface BoilerplateCardConfig {
   icon: string;
   icon_color: string;
   subtitle: string;
-  hide_condition: string;
+  hide_condition: boolean;
   background_color?: string;
   large: boolean;
   font_color?: string;
-  spin?: boolean;
+  icon_animation?: 'spin';
 }

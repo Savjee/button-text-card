@@ -107,7 +107,7 @@ export class BoilerplateCard extends LitElement {
     // Render JS templates
     this.evaluateJsTemplates();
 
-    if (!this._inEditMode() && this._renderedConfig.hide_condition === 'true') {
+    if (!this._inEditMode() && this._renderedConfig.hide_condition === true) {
       return html``;
     }
 
@@ -146,14 +146,14 @@ export class BoilerplateCard extends LitElement {
           hasDoubleTap: hasAction(this._config.double_tap_action),
           repeat: this._config.hold_action ? this._config.hold_action.repeat : undefined,
         })}
-        class="${this._inEditMode() && this._renderedConfig.hide_condition === 'true' ? 'edit-preview' : ''}"
+        class="${this._inEditMode() && this._renderedConfig.hide_condition === true ? 'edit-preview' : ''}"
         tabindex="0"
       >
         <div class="flex-container ${this._renderedConfig.large === true ? 'card-look' : ''}">
           <div class="icon-container ${this._renderedConfig.large === false ? 'card-look' : ''}">
             <ha-icon
               icon="${this._renderedConfig.icon}"
-              class="${this._renderedConfig.spin === true ? 'spin' : ''}"
+              class="${this._renderedConfig.icon_animation === 'spin' ? 'spin' : ''}"
             ></ha-icon>
           </div>
 
