@@ -308,6 +308,7 @@ export class BoilerplateCard extends LitElement {
         display: flex;
         align-items: center;
         justify-content: center;
+        text-align:center;
       }
 
       .text-container {
@@ -317,8 +318,6 @@ export class BoilerplateCard extends LitElement {
 
       .icon-container ha-icon {
         color: var(--icon-color);
-        width: 33px;
-        height: 33px;
       }
 
       .icon-container ha-icon.spin {
