@@ -157,10 +157,16 @@ export class BoilerplateCard extends LitElement {
             ></ha-icon>
           </div>
 
-          <div class="text-container">
-            <h1>${this._renderedConfig.title}</h1>
-            <p class="${this._renderedConfig.subtitle === '' ? 'hidden' : ''}">${this._renderedConfig.subtitle}</p>
-          </div>
+          ${this._renderedConfig.title === '' && this._renderedConfig.subtitle === ''
+            ? html``
+            : html`
+                <div class="text-container">
+                  <h1>${this._renderedConfig.title}</h1>
+                  <p class="${this._renderedConfig.subtitle === '' ? 'hidden' : ''}">
+                    ${this._renderedConfig.subtitle}
+                  </p>
+                </div>
+              `}
         </div>
       </ha-card>
     `;
@@ -299,20 +305,19 @@ export class BoilerplateCard extends LitElement {
       .icon-container {
         width: 85px;
         height: 85px;
-        margin-right: 24px;
         display: flex;
         align-items: center;
         justify-content: center;
+        text-align: center;
       }
 
       .text-container {
         color: var(--primary-text-color);
+        margin-left: 24px;
       }
 
       .icon-container ha-icon {
         color: var(--icon-color);
-        width: 33px;
-        height: 33px;
       }
 
       .icon-container ha-icon.spin {
