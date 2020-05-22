@@ -308,7 +308,7 @@ export class BoilerplateCard extends LitElement {
         display: flex;
         align-items: center;
         justify-content: center;
-        text-align:center;
+        text-align: center;
       }
 
       .text-container {
