@@ -38,6 +38,7 @@ export class BoilerplateCard extends LitElement {
     'shadow_color',
     'large',
     'spin',
+    'icon_color',
   ];
 
   private static templateRegex = new RegExp('\\[\\[\\[([^]*)\\]\\]\\]', 'gm');
@@ -276,6 +277,7 @@ export class BoilerplateCard extends LitElement {
         --paper-card-background-color: 'rgba(11, 11, 11, 0.00)';
         box-shadow: 2px 2px rgba(0, 0, 0, 0);
         padding: 16px;
+        outline: none;
       }
 
       ha-card.edit-preview {
