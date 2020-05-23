@@ -38,6 +38,7 @@ export class BoilerplateCard extends LitElement {
     'shadow_color',
     'large',
     'spin',
+    'icon_color',
   ];
 
   private static templateRegex = new RegExp('\\[\\[\\[([^]*)\\]\\]\\]', 'gm');
