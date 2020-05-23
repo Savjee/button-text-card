@@ -16,6 +16,7 @@ export interface BoilerplateCardConfig {
   title: string;
   icon: string;
   icon_color: string;
+  icon_size: number;
   subtitle: string;
   hide_condition: boolean;
   background_color?: string;

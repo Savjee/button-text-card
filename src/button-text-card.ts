@@ -32,6 +32,7 @@ export class BoilerplateCard extends LitElement {
     'title',
     'subtitle',
     'icon',
+    'icon_size',
     'hide_condition',
     'font_color',
     'background_color',
@@ -135,6 +136,10 @@ export class BoilerplateCard extends LitElement {
 
     if (this._renderedConfig.font_color) {
       this.style.setProperty('--primary-text-color', this._renderedConfig.font_color);
+    }
+
+    if (this._renderedConfig.icon_size) {
+      this.style.setProperty('--mdc-icon-size', this._renderedConfig.icon_size + 'px');
     }
 
     this._configureIconColor();
