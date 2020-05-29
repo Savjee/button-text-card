@@ -54,7 +54,9 @@ export class BoilerplateCard extends LitElement {
       name: 'Button Text Card',
       title: '',
       subtitle: '',
+      height: '85px',
       large: false,
+      width: '85px',
       ...config,
     };
 
@@ -141,6 +143,9 @@ export class BoilerplateCard extends LitElement {
     if (this._renderedConfig.icon_size) {
       this.style.setProperty('--mdc-icon-size', this._renderedConfig.icon_size + 'px');
     }
+
+    this.style.setProperty('--icon-width', this._renderedConfig.width);
+    this.style.setProperty('--icon-height', this._renderedConfig.height);
 
     this._configureIconColor();
 
@@ -283,6 +288,7 @@ export class BoilerplateCard extends LitElement {
         box-shadow: 2px 2px rgba(0, 0, 0, 0);
         padding: 16px;
         outline: none;
+        cursor: pointer;
       }
 
       ha-card.edit-preview {
@@ -310,12 +316,12 @@ export class BoilerplateCard extends LitElement {
       }
 
       .icon-container {
-        width: 85px;
-        height: 85px;
-        display: flex;
         align-items: center;
+        display: flex;
+        height: var(--icon-height);
         justify-content: center;
         text-align: center;
+        width: var(--icon-width);
       }
 
       .text-container {
