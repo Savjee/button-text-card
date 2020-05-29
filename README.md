@@ -20,6 +20,7 @@
 Custom, "neumorphism" card for Home Assistant with support for templating.
 
 # Table of contents
+
 * [Installation instructions](#installation-instructions)
 * [Configuration options](#configuration-options)
 * [Examples](#examples)
@@ -33,8 +34,8 @@ Custom, "neumorphism" card for Home Assistant with support for templating.
 
 1. Open [HACS](https://hacs.xyz/)
 2. Go to Plugins > Search for "Button Text Card"
-4. Install it
-5. Add to your Lovelace config:
+3. Install it
+4. Add to your Lovelace config:
 
 ```yaml
   - url: /hacsfiles/button-text-card/button-text-card.js
@@ -42,6 +43,7 @@ Custom, "neumorphism" card for Home Assistant with support for templating.
 ```
 
 # Configuration options
+
 | Name             | Type    | Requirement | Description                                                                 | Default              | Template support? |
 |------------------|---------|-------------|-----------------------------------------------------------------------------|----------------------|-------------------|
 | type             | string  | required    | `custom:button-text-card`                                                   | n/a                  | No                |
@@ -56,7 +58,8 @@ Custom, "neumorphism" card for Home Assistant with support for templating.
 | background_color | string  | optional    | CSS color for the background of the badge                                   | Defined by theme     | Yes               |
 | hide_condition   | string  | optional    | Javascript template that defines if card should be hidden                   | `false`              | Yes               |
 | icon_animation   | string  | optional    | Possible values: 'spin'                                                     |                      | Yes               |
-
+| width            | string  | optional    | Width of the button (not the entire card) in px or %                        | '85px'               | No                |
+| height           | string  | optional    | Height of the button in px or %                                             | '85px'               | No                |
 
 # Examples
 
@@ -144,7 +147,8 @@ title: |
 subtitle: Support for templating!
 ```
 
-# Conditional hiding
+# Conditional Hiding
+
 You can use a Javascript template to dynamically hide a card. This can be useful to create contextual cards (eg: only show when the front door is open, when there are lights on, ...).
 
 To do so, write a Javascript template in the `hide_condition` attribute and return `true` if the card should be hidden.
@@ -177,7 +181,7 @@ Cool feature: when you go into edit mode, all hidden cards will appear with an o
     <img src="https://savjee.github.io/button-text-card/example-7.png">
 </div>
 
-```
+```yaml
 type: 'custom:button-text-card'
 large: true
 entity: binary_sensor.voordeur
@@ -190,9 +194,16 @@ hide_condition: |
 ```
 
 # TODO
+
 * Document tap_action support
 
 # License & contributions
+
 See [LICENSE](/LICENSE)
 
-Feel free to suggest improvements, flag issues, open pull requests, ...
+* Feel free to suggest improvements, flag issues, open pull requests, ...
+* Please open all Pull Requests against the `dev` branch.
+
+## Credits
+
+* [kenstone](https://github.com/kenstone) for general contributions

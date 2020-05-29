@@ -13,14 +13,17 @@ export interface BoilerplateCardConfig {
   double_tap_action?: ActionConfig;
 
   // Specific for button-text-card
-  title: string;
+
+  background_color?: string;
+  font_color?: string;
+  height: string;
+  hide_condition: boolean;
   icon: string;
+  icon_animation?: 'spin';
   icon_color: string;
   icon_size: number;
-  subtitle: string;
-  hide_condition: boolean;
-  background_color?: string;
   large: boolean;
-  font_color?: string;
-  icon_animation?: 'spin';
+  title: string;
+  subtitle: string;
+  width: string;
 }
