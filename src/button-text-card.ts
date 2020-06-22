@@ -131,7 +131,7 @@ export class BoilerplateCard extends LitElement {
     }
 
     if (this._renderedConfig.background_color) {
-      this.style.setProperty('--primary-background-color', this._renderedConfig.background_color);
+      this.style.setProperty('--ha-card-background', this._renderedConfig.background_color);
     }
 
     if (this._renderedConfig.font_color) {
@@ -279,7 +279,7 @@ export class BoilerplateCard extends LitElement {
       }
 
       ha-card {
-        --paper-card-background-color: 'rgba(11, 11, 11, 0.00)';
+        background-color: rgba(255, 255, 255, 0);
         box-shadow: 2px 2px rgba(0, 0, 0, 0);
         padding: 16px;
         outline: none;
@@ -305,8 +305,8 @@ export class BoilerplateCard extends LitElement {
 
       .card-look {
         border-radius: 16px;
-        background-color: var(--primary-background-color);
-        box-shadow: var(--ha-card-box-shadow, 9px 9px 17px #c8c8c8, -9px -9px 17px #ffffff);
+        background: var(--ha-card-background, var(--paper-card-background-color, white));
+        box-shadow: var(--ha-card-box-shadow, 9px 9px 17px rgba(0, 0, 0, 0.14), -9px -9px 17px rgba(0, 0, 0, 0.12));
       }
 
       .icon-container {
