@@ -230,7 +230,7 @@ export class BoilerplateCard extends LitElement {
       ?.shadowRoot?.querySelector('home-assistant-main')
       ?.shadowRoot?.querySelector('app-drawer-layout partial-panel-resolver ha-panel-lovelace')
       ?.shadowRoot?.querySelector('hui-root')
-      ?.shadowRoot?.querySelector('ha-app-layout app-header');
+      ?.shadowRoot?.querySelector('ha-app-layout app-header app-toolbar');
 
     if (el) {
       return el.classList.contains('edit-mode');
