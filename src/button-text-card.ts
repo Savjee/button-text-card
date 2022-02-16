@@ -21,17 +21,17 @@ import {
 
 import { BoilerplateCardConfig } from './types';
 import { actionHandler } from './action-handler-directive';
-import { CARD_VERSION } from './const';
+import { CARD_ID, CARD_VERSION } from './const';
 
 
 /* eslint no-console: 0 */
 console.info(
-  `%c  BUTTON-TEXT-CARD \n%c  v${CARD_VERSION}    `,
+  `%c  ${CARD_ID.toUpperCase()} \n%c  v${CARD_VERSION}    `,
   'color: orange; font-weight: bold; background: black',
   'color: white; font-weight: bold; background: dimgray',
 );
 
-@customElement('button-text-card2')
+@customElement(CARD_ID)
 export class BoilerplateCard extends LitElement {
 
   @property({ attribute: false }) public hass?: HomeAssistant;

@@ -3,6 +3,7 @@ import { AttributePart, directive, Directive, DirectiveParameters } from 'lit/di
 
 import { ActionHandlerDetail, ActionHandlerOptions } from 'custom-card-helpers/dist/types';
 import { fireEvent } from 'custom-card-helpers';
+import { CARD_ID } from './const';
 
 const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.maxTouchPoints > 0;
 
@@ -163,15 +164,16 @@ class ActionHandler extends HTMLElement implements ActionHandler {
 }
 
 // TODO You need to replace all instances of "action-handler-boilerplate" with "action-handler-<your card name>"
-customElements.define('action-handler-boilerplate2', ActionHandler);
+const handlerId = 'action-handler-' + CARD_ID;
+customElements.define(handlerId, ActionHandler);
 
 const getActionHandler = (): ActionHandler => {
   const body = document.body;
-  if (body.querySelector('action-handler-boilerplate2')) {
-    return body.querySelector('action-handler-boilerplate2') as ActionHandler;
+  if (body.querySelector(handlerId)) {
+    return body.querySelector(handlerId) as ActionHandler;
   }
 
-  const actionhandler = document.createElement('action-handler-boilerplate2');
+  const actionhandler = document.createElement(handlerId);
   body.appendChild(actionhandler);
 
   return actionhandler as ActionHandler;
