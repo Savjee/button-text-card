@@ -13,6 +13,7 @@ import {
   hasAction,
   ActionHandlerEvent,
   handleAction,
+  getLovelace,
 } from 'custom-card-helpers';
 
 import {
@@ -263,22 +264,11 @@ export class BoilerplateCard extends LitElement {
   }
 
   /**
-   * Returns true if Lovelace is in edit mode. This is quite hacky and might easily
-   * break in future Lovelace versions. Unfortunately there isn't a better way atm.
+   * Returns true if Lovelace is in edit mode. Primarily used to show hidden
+   * cards while editing a dashboard to easily find the correct card.
    */
   private _inEditMode(): boolean {
-    const el = document
-      .querySelector('home-assistant')
-      ?.shadowRoot?.querySelector('home-assistant-main')
-      ?.shadowRoot?.querySelector('app-drawer-layout partial-panel-resolver ha-panel-lovelace')
-      ?.shadowRoot?.querySelector('hui-root')
-      ?.shadowRoot?.querySelector('ha-app-layout app-header app-toolbar');
-
-    if (el) {
-      return el.classList.contains('edit-mode');
-    }
-
-    return false;
+    return getLovelace().editMode === true;
   }
 
   /**
