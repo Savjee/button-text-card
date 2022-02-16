@@ -1,4 +1,12 @@
-import { LitElement, html, customElement, property, CSSResult, TemplateResult, css, PropertyValues } from 'lit-element';
+import { 
+  LitElement, 
+  html, 
+  CSSResultGroup, 
+  TemplateResult, 
+  css, 
+  PropertyValues 
+} from 'lit';
+import { customElement, property, state } from "lit/decorators";
 import {
   HomeAssistant,
   hasConfigOrEntityChanged,
@@ -7,10 +15,14 @@ import {
   handleAction,
 } from 'custom-card-helpers';
 
+import {
+  HassEntity,
+} from "home-assistant-js-websocket";
+
 import { BoilerplateCardConfig } from './types';
 import { actionHandler } from './action-handler-directive';
 import { CARD_VERSION } from './const';
-import { HassEntity } from 'home-assistant-js-websocket';
+
 
 /* eslint no-console: 0 */
 console.info(
@@ -19,10 +31,11 @@ console.info(
   'color: white; font-weight: bold; background: dimgray',
 );
 
-@customElement('button-text-card')
+@customElement('button-text-card2')
 export class BoilerplateCard extends LitElement {
-  @property() public hass?: HomeAssistant;
-  @property() private _config?: BoilerplateCardConfig;
+
+  @property({ attribute: false }) public hass?: HomeAssistant;
+  @state() private config!: BoilerplateCardConfig;
   private _renderedConfig?: BoilerplateCardConfig;
 
   @property() private _hasTemplate = false;
@@ -50,7 +63,7 @@ export class BoilerplateCard extends LitElement {
       throw new Error('Invalid configuration.');
     }
 
-    this._config = {
+    this.config = {
       name: 'Button Text Card',
       title: '',
       subtitle: '',
@@ -59,11 +72,11 @@ export class BoilerplateCard extends LitElement {
     };
 
     // Make a copy of the config so we can render any templates
-    this._renderedConfig = Object.assign({}, this._config);
+    this._renderedConfig = Object.assign({}, this.config);
 
     // Check if there is a template in a field
     for (const field of BoilerplateCard.templateFields) {
-      const regResult = BoilerplateCard.templateRegex.exec(this._config[field]);
+      const regResult = BoilerplateCard.templateRegex.exec(this.config[field]);
       BoilerplateCard.templateRegex.lastIndex = 0;
       if (regResult !== null) {
         this._hasTemplate = true;
@@ -74,37 +87,37 @@ export class BoilerplateCard extends LitElement {
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
     // Always render the card when there is no entity
-    if (!this._config?.entity) {
+    if (!this.config || !this.config.entity) {
       return true;
     }
 
-    // If there is an entity, update the card only when it changed state
+    // // If there is an entity, update the card only when it changed state
     return hasConfigOrEntityChanged(this, changedProps, this._hasTemplate);
   }
 
   protected evaluateJsTemplates(): void {
-    if (!this._renderedConfig || !this._config) {
+    if (!this._renderedConfig || !this.config) {
       return;
     }
 
     for (const field of BoilerplateCard.templateFields) {
-      const regMatches = BoilerplateCard.templateRegex.exec(this._config[field]);
+      const regMatches = BoilerplateCard.templateRegex.exec(this.config[field]);
       BoilerplateCard.templateRegex.lastIndex = 0;
 
       if (regMatches && regMatches.length > 1) {
         this._renderedConfig[field] = this._evalTemplate(this._stateObj, regMatches[1]);
       } else {
-        this._renderedConfig[field] = this._config[field];
+        this._renderedConfig[field] = this.config[field];
       }
     }
   }
 
   protected render(): TemplateResult | void {
-    if (!this._config || !this.hass || !this._renderedConfig) {
-      return html``;
+    if (!this.config || !this.hass || !this._renderedConfig) {
+      return this._showError("Invalid configuration");
     }
 
-    this._stateObj = this._config.entity ? this.hass.states[this._config.entity] : undefined;
+    this._stateObj = this.config.entity ? this.hass.states[this.config.entity] : undefined;
 
     // Render JS templates
     this.evaluateJsTemplates();
@@ -114,18 +127,18 @@ export class BoilerplateCard extends LitElement {
     }
 
     // If no icon was set by the user, try fetching one from HA
-    if (!this._config.icon || this._config.icon === '') {
+    if (!this.config.icon || this.config.icon === '') {
       let icon = 'mdi:alert-circle';
 
-      if (this._config.entity) {
-        const hassIcon = this.hass.states[this._config.entity].attributes.icon;
+      if (this.config.entity) {
+        const hassIcon = this.hass.states[this.config.entity].attributes.icon;
         if (hassIcon) {
           icon = hassIcon;
         }
       }
 
       this.setConfig({
-        ...this._config,
+        ...this.config,
         icon: icon,
       });
     }
@@ -148,9 +161,8 @@ export class BoilerplateCard extends LitElement {
       <ha-card
         @action=${this._handleAction}
         .actionHandler=${actionHandler({
-          hasHold: hasAction(this._config.hold_action),
-          hasDoubleTap: hasAction(this._config.double_tap_action),
-          repeat: this._config.hold_action ? this._config.hold_action.repeat : undefined,
+          hasHold: hasAction(this.config.hold_action),
+          hasDoubleClick: hasAction(this.config.double_tap_action),
         })}
         class="${this._inEditMode() && this._renderedConfig.hide_condition === true ? 'edit-preview' : ''}"
         tabindex="0"
@@ -179,9 +191,22 @@ export class BoilerplateCard extends LitElement {
   }
 
   private _handleAction(ev: ActionHandlerEvent): void {
-    if (this.hass && this._config && ev.detail.action) {
-      handleAction(this, this.hass, this._config, ev.detail.action);
+    if (this.hass && this.config && ev.detail.action) {
+      handleAction(this, this.hass, this.config, ev.detail.action);
     }
+  }
+
+  private _showError(error: string): TemplateResult {
+    const errorCard = document.createElement('hui-error-card');
+    errorCard.setConfig({
+      type: 'error',
+      error,
+      origConfig: this.config,
+    });
+
+    return html`
+      ${errorCard}
+    `;
   }
 
   /**
@@ -259,7 +284,7 @@ export class BoilerplateCard extends LitElement {
     );
   }
 
-  static get styles(): CSSResult {
+  static get styles(): CSSResultGroup {
     return css`
       @-moz-keyframes spin {
         100% {
