@@ -22,11 +22,11 @@ export interface BoilerplateCardConfig extends LovelaceCardConfig {
 
   // Specific for button-text-card
   title?: string;
-  icon: string;
-  icon_color: string;
-  icon_size: number;
+  icon?: string;
+  icon_color?: string;
+  icon_size?: number;
   subtitle?: string;
-  hide_condition: boolean;
+  hide_condition?: boolean;
   background_color?: string;
   large?: boolean;
   font_color?: string;
