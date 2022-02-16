@@ -122,11 +122,12 @@ export class BoilerplateCard extends LitElement {
       const regMatches = BoilerplateCard.templateRegex.exec(this.config[field]);
       BoilerplateCard.templateRegex.lastIndex = 0;
 
+      let content = this.config[field];
       if (regMatches && regMatches.length > 1) {
-        this._renderedConfig[field] = this._evalTemplate(this._stateObj, regMatches[1]);
-      } else {
-        this._renderedConfig[field] = this.config[field];
+         content = this._evalTemplate(this._stateObj, regMatches[1]);
       }
+
+      this._renderedConfig[field] = content;
     }
   }
 
