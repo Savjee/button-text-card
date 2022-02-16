@@ -163,15 +163,18 @@ export class BoilerplateCard extends LitElement {
     }
 
     if (this._renderedConfig.background_color) {
-      this.style.setProperty('--ha-card-background', this._renderedConfig.background_color);
+      this.style.setProperty('--ha-card-background', 
+                              this._renderedConfig.background_color);
     }
 
     if (this._renderedConfig.font_color) {
-      this.style.setProperty('--primary-text-color', this._renderedConfig.font_color);
+      this.style.setProperty('--primary-text-color', 
+                              this._renderedConfig.font_color);
     }
 
     if (this._renderedConfig.icon_size) {
-      this.style.setProperty('--mdc-icon-size', this._renderedConfig.icon_size + 'px');
+      this.style.setProperty('--mdc-icon-size', 
+                              this._renderedConfig.icon_size + 'px');
     }
 
     this._configureIconColor();
@@ -245,18 +248,24 @@ export class BoilerplateCard extends LitElement {
    *    as CSS color code.
    */
   private _configureIconColor(): void {
-    if (this._renderedConfig?.icon_color && this._renderedConfig.icon_color !== 'auto') {
-      this.style.setProperty('--icon-color', this._renderedConfig.icon_color);
+    if(!this._renderedConfig){
+      return;
+    }
+    const conf = this._renderedConfig;
+
+    if (conf.icon_color && conf.icon_color !== 'auto') {
+      this.style.setProperty('--icon-color', conf.icon_color);
       return;
     }
 
-    if (this._renderedConfig?.icon_color === 'auto' && this._stateObj?.state === 'on') {
-      this.style.setProperty('--icon-color', 'var(--paper-item-icon-active-color)');
+    if (conf.icon_color === 'auto' && this._stateObj?.state === 'on') {
+      this.style.setProperty('--icon-color', 
+                            'var(--paper-item-icon-active-color)');
       return;
     }
 
-    if (!this._renderedConfig?.icon_color && this._renderedConfig?.font_color) {
-      this.style.setProperty('--icon-color', this._renderedConfig.font_color);
+    if (!conf.icon_color && conf.font_color) {
+      this.style.setProperty('--icon-color', conf.font_color);
       return;
     }
 
@@ -276,13 +285,14 @@ export class BoilerplateCard extends LitElement {
    * Renders a Javascript template
    * Credit: https://github.com/custom-cards/button-card
    */
-  private _evalTemplate(state: HassEntity | undefined, func: any): any {
+  private _evalTemplate(state: HassEntity | undefined, func: string): any {
     if (!this.hass) {
       return '';
     }
 
     /* eslint no-new-func: 0 */
-    return new Function('states', 'entity', 'user', 'hass', 'variables', `'use strict'; ${func}`).call(
+    return new Function('states', 'entity', 'user', 'hass', 'variables', 
+                        `'use strict'; ${func}`).call(
       this,
       this.hass.states,
       state,
@@ -338,8 +348,11 @@ export class BoilerplateCard extends LitElement {
 
       .card-look {
         border-radius: 16px;
-        background: var(--ha-card-background, var(--card-background-color, white));
-        box-shadow: var(--ha-card-box-shadow, 9px 9px 17px rgba(0, 0, 0, 0.14), -9px -9px 17px rgba(0, 0, 0, 0.12));
+        background: var(--ha-card-background, 
+                        var(--card-background-color, white));
+        box-shadow: var(--ha-card-box-shadow, 
+                        9px 9px 17px rgba(0, 0, 0, 0.14), 
+                        -9px -9px 17px rgba(0, 0, 0, 0.12));
       }
 
       .icon-container {
