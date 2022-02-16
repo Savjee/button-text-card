@@ -31,15 +31,32 @@ console.info(
   'color: white; font-weight: bold; background: dimgray',
 );
 
+// Put the card into the UI card picker dialog
+(window as any).customCards = (window as any).customCards || [];
+(window as any).customCards.push({
+  type: CARD_ID,
+  name: 'Button Text Card',
+  description: 'Beautiful "neumorphism" card.',
+  preview: true,
+});
+
 @customElement(CARD_ID)
 export class BoilerplateCard extends LitElement {
 
-  @property({ attribute: false }) public hass?: HomeAssistant;
   @state() private config!: BoilerplateCardConfig;
   private _renderedConfig?: BoilerplateCardConfig;
 
+  @property({ attribute: false }) public hass?: HomeAssistant;
   @property() private _hasTemplate = false;
   @property() private _stateObj: HassEntity | undefined;
+
+  public static getStubConfig(): Record<string, unknown> {
+    return {
+      title: "Button Text Card",
+      subtitle: "Beautiful neumorphism card",
+      icon: "mdi:cards-heart"
+    };
+  }
 
   private static templateFields = [
     'title',
