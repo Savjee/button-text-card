@@ -16,7 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "custom-card-helpers": "^1.7.2",
-    "home-assistant-js-websocket": "^5.11.1",
+    "home-assistant-js-websocket": "^8.0.0",
     "lit": "^2.0.0-rc.2"
   },
   "devDependencies": {
@@ -36,9 +36,9 @@
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-serve": "^1.1.0",
+    "rollup-plugin-serve": "^2.0.1",
     "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-typescript2": "^0.30.0",
+    "rollup-plugin-typescript2": "^0.34.0",
     "typescript": "^4.4.3"
   },
   "scripts": {
