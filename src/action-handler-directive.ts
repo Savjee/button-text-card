@@ -1,34 +1,41 @@
-import { directive, PropertyPart } from 'lit-html';
-import { fireEvent, ActionHandlerOptions } from 'custom-card-helpers';
+import { noChange } from 'lit';
+import { AttributePart, directive, Directive, DirectiveParameters } from 'lit/directive';
 
-const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+import { ActionHandlerDetail, ActionHandlerOptions } from 'custom-card-helpers/dist/types';
+import { fireEvent } from 'custom-card-helpers';
+import { CARD_ID } from './const';
+
+const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.maxTouchPoints > 0;
 
 interface ActionHandler extends HTMLElement {
   holdTime: number;
   bind(element: Element, options): void;
 }
-interface ActionHandlerElement extends Element {
+interface ActionHandlerElement extends HTMLElement {
   actionHandler?: boolean;
 }
 
+declare global {
+  interface HASSDomEvents {
+    action: ActionHandlerDetail;
+  }
+}
+
 class ActionHandler extends HTMLElement implements ActionHandler {
-  public holdTime: number;
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  public holdTime = 500;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public ripple: any;
-  protected timer: number | undefined;
-  protected held: boolean;
-  protected cooldownStart: boolean;
-  protected cooldownEnd: boolean;
-  private dblClickTimeout: number | undefined;
+
+  protected timer?: number;
+
+  protected held = false;
+
+  private dblClickTimeout?: number;
 
   constructor() {
     super();
-    this.holdTime = 500;
     this.ripple = document.createElement('mwc-ripple');
-    this.timer = undefined;
-    this.held = false;
-    this.cooldownStart = false;
-    this.cooldownEnd = false;
   }
 
   public connectedCallback(): void {
@@ -38,6 +45,7 @@ class ActionHandler extends HTMLElement implements ActionHandler {
       height: isTouch ? '100px' : '50px',
       transform: 'translate(-50%, -50%)',
       pointerEvents: 'none',
+      zIndex: '999',
     });
 
     this.appendChild(this.ripple);
@@ -72,13 +80,10 @@ class ActionHandler extends HTMLElement implements ActionHandler {
       }
       e.cancelBubble = true;
       e.returnValue = false;
-      return;
+      return false;
     });
 
-    const clickStart = (ev: Event): void => {
-      if (this.cooldownStart) {
-        return;
-      }
+    const start = (ev: Event): void => {
       this.held = false;
       let x;
       let y;
@@ -94,56 +99,50 @@ class ActionHandler extends HTMLElement implements ActionHandler {
         this.startAnimation(x, y);
         this.held = true;
       }, this.holdTime);
-
-      this.cooldownStart = true;
-      window.setTimeout(() => (this.cooldownStart = false), 100);
     };
 
-    const clickEnd = (ev: Event): void => {
-      if (this.cooldownEnd || (['touchend', 'touchcancel'].includes(ev.type) && this.timer === undefined)) {
+    const end = (ev: Event): void => {
+      // Prevent mouse event if touch event
+      ev.preventDefault();
+      if (['touchend', 'touchcancel'].includes(ev.type) && this.timer === undefined) {
         return;
       }
       clearTimeout(this.timer);
       this.stopAnimation();
       this.timer = undefined;
       if (this.held) {
-        fireEvent(element as HTMLElement, 'action', { action: 'hold' });
-      } else if (options.hasDoubleTap) {
-        if ((ev as MouseEvent).detail === 1 || ev.type === 'keyup') {
+        fireEvent(element, 'action', { action: 'hold' });
+      } else if (options.hasDoubleClick) {
+        if ((ev.type === 'click' && (ev as MouseEvent).detail < 2) || !this.dblClickTimeout) {
           this.dblClickTimeout = window.setTimeout(() => {
-            fireEvent(element as HTMLElement, 'action', { action: 'tap' });
+            this.dblClickTimeout = undefined;
+            fireEvent(element, 'action', { action: 'tap' });
           }, 250);
         } else {
           clearTimeout(this.dblClickTimeout);
-          fireEvent(element as HTMLElement, 'action', { action: 'double_tap' });
+          this.dblClickTimeout = undefined;
+          fireEvent(element, 'action', { action: 'double_tap' });
         }
       } else {
-        fireEvent(element as HTMLElement, 'action', { action: 'tap' });
-      }
-      this.cooldownEnd = true;
-      window.setTimeout(() => (this.cooldownEnd = false), 100);
-    };
-
-    const handleEnter = (ev: Event): void => {
-      if ((ev as KeyboardEvent).keyCode === 13) {
-        return clickEnd(ev);
+        fireEvent(element, 'action', { action: 'tap' });
       }
     };
 
-    element.addEventListener('touchstart', clickStart, { passive: true });
-    element.addEventListener('touchend', clickEnd);
-    element.addEventListener('touchcancel', clickEnd);
+    const handleEnter = (ev: KeyboardEvent): void => {
+      if (ev.keyCode !== 13) {
+        return;
+      }
+      end(ev);
+    };
+
+    element.addEventListener('touchstart', start, { passive: true });
+    element.addEventListener('touchend', end);
+    element.addEventListener('touchcancel', end);
+
+    element.addEventListener('mousedown', start, { passive: true });
+    element.addEventListener('click', end);
+
     element.addEventListener('keyup', handleEnter);
-
-    // iOS 13 sends a complete normal touchstart-touchend series of events followed by a mousedown-click series.
-    // That might be a bug, but until it's fixed, this should make action-handler work.
-    // If it's not a bug that is fixed, this might need updating with the next iOS version.
-    // Note that all events (both touch and mouse) must be listened for in order to work on computers with both mouse and touchscreen.
-    const isIOS13 = /iPhone OS 13_/.test(window.navigator.userAgent);
-    if (!isIOS13) {
-      element.addEventListener('mousedown', clickStart, { passive: true });
-      element.addEventListener('click', clickEnd);
-    }
   }
 
   private startAnimation(x: number, y: number): void {
@@ -165,21 +164,22 @@ class ActionHandler extends HTMLElement implements ActionHandler {
 }
 
 // TODO You need to replace all instances of "action-handler-boilerplate" with "action-handler-<your card name>"
-customElements.define('action-handler-button-text-card', ActionHandler);
+const handlerId = 'action-handler-' + CARD_ID;
+customElements.define(handlerId, ActionHandler);
 
 const getActionHandler = (): ActionHandler => {
   const body = document.body;
-  if (body.querySelector('action-handler-button-text-card')) {
-    return body.querySelector('action-handler-button-text-card') as ActionHandler;
+  if (body.querySelector(handlerId)) {
+    return body.querySelector(handlerId) as ActionHandler;
   }
 
-  const actionhandler = document.createElement('action-handler-button-text-card');
+  const actionhandler = document.createElement(handlerId);
   body.appendChild(actionhandler);
 
   return actionhandler as ActionHandler;
 };
 
-export const actionHandlerBind = (element: ActionHandlerElement, options: ActionHandlerOptions): void => {
+export const actionHandlerBind = (element: ActionHandlerElement, options?: ActionHandlerOptions): void => {
   const actionhandler: ActionHandler = getActionHandler();
   if (!actionhandler) {
     return;
@@ -187,6 +187,14 @@ export const actionHandlerBind = (element: ActionHandlerElement, options: Action
   actionhandler.bind(element, options);
 };
 
-export const actionHandler = directive((options: ActionHandlerOptions = {}) => (part: PropertyPart): void => {
-  actionHandlerBind(part.committer.element, options);
-});
+export const actionHandler = directive(
+  class extends Directive {
+    update(part: AttributePart, [options]: DirectiveParameters<this>) {
+      actionHandlerBind(part.element as ActionHandlerElement, options);
+      return noChange;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    render(_options?: ActionHandlerOptions) {}
+  },
+);

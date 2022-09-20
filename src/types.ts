@@ -1,7 +1,15 @@
-import { ActionConfig } from 'custom-card-helpers';
+import { ActionConfig, LovelaceCard, LovelaceCardConfig, LovelaceCardEditor } from 'custom-card-helpers';
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'boilerplate-card-editor': LovelaceCardEditor;
+    'hui-error-card': LovelaceCard;
+  }
+}
+
 
 // TODO Add your configuration elements here for type-checking
-export interface BoilerplateCardConfig {
+export interface BoilerplateCardConfig extends LovelaceCardConfig {
   type: string;
   name?: string;
   show_warning?: boolean;
@@ -13,13 +21,14 @@ export interface BoilerplateCardConfig {
   double_tap_action?: ActionConfig;
 
   // Specific for button-text-card
-  title: string;
-  icon: string;
-  icon_color: string;
-  subtitle: string;
-  hide_condition: boolean;
+  title?: string;
+  icon?: string;
+  icon_color?: string;
+  icon_size?: number;
+  subtitle?: string;
+  hide_condition?: boolean;
   background_color?: string;
-  large: boolean;
+  large?: boolean;
   font_color?: string;
   icon_animation?: 'spin';
 }
