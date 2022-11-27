@@ -141,7 +141,13 @@ export class BoilerplateCard extends LitElement {
     // Render JS templates
     this.evaluateJsTemplates();
 
-    if (!this._inEditMode() && this._renderedConfig.hide_condition === true) {
+
+    // When card should not be visible, explicitly hide the card by setting
+    // the display type to none. This avoids padding issues with cards below it.
+    const invisible = !this._inEditMode() && this._renderedConfig.hide_condition === true;
+    this.style.setProperty("display", invisible ? "none" : "");
+
+    if (invisible) {
       return html``;
     }
 
