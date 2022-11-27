@@ -332,6 +332,7 @@ export class BoilerplateCard extends LitElement {
         box-shadow: 2px 2px rgba(0, 0, 0, 0);
         padding: 16px;
         outline: none;
+        border: none;
       }
 
       ha-card.edit-preview {
