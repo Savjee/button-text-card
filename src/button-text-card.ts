@@ -64,6 +64,7 @@ export class BoilerplateCard extends LitElement {
     'subtitle',
     'icon',
     'icon_size',
+    'icon_animation',
     'hide_condition',
     'font_color',
     'background_color',
