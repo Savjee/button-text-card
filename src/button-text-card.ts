@@ -1,10 +1,10 @@
-import { 
-  LitElement, 
-  html, 
-  CSSResultGroup, 
-  TemplateResult, 
-  css, 
-  PropertyValues 
+import {
+  LitElement,
+  html,
+  CSSResultGroup,
+  TemplateResult,
+  css,
+  PropertyValues
 } from 'lit';
 import { customElement, property, state } from "lit/decorators";
 import {
@@ -169,17 +169,17 @@ export class BoilerplateCard extends LitElement {
     }
 
     if (this._renderedConfig.background_color) {
-      this.style.setProperty('--ha-card-background', 
+      this.style.setProperty('--ha-card-background',
                               this._renderedConfig.background_color);
     }
 
     if (this._renderedConfig.font_color) {
-      this.style.setProperty('--primary-text-color', 
+      this.style.setProperty('--primary-text-color',
                               this._renderedConfig.font_color);
     }
 
     if (this._renderedConfig.icon_size) {
-      this.style.setProperty('--mdc-icon-size', 
+      this.style.setProperty('--mdc-icon-size',
                               this._renderedConfig.icon_size + 'px');
     }
 
@@ -265,7 +265,7 @@ export class BoilerplateCard extends LitElement {
     }
 
     if (conf.icon_color === 'auto' && this._stateObj?.state === 'on') {
-      this.style.setProperty('--icon-color', 
+      this.style.setProperty('--icon-color',
                             'var(--paper-item-icon-active-color)');
       return;
     }
@@ -297,7 +297,7 @@ export class BoilerplateCard extends LitElement {
     }
 
     /* eslint no-new-func: 0 */
-    return new Function('states', 'entity', 'user', 'hass', 'variables', 
+    return new Function('states', 'entity', 'user', 'hass', 'variables',
                         `'use strict'; ${func}`).call(
       this,
       this.hass.states,
@@ -355,10 +355,10 @@ export class BoilerplateCard extends LitElement {
 
       .card-look {
         border-radius: 16px;
-        background: var(--ha-card-background, 
+        background: var(--ha-card-background,
                         var(--card-background-color, white));
-        box-shadow: var(--ha-card-box-shadow, 
-                        9px 9px 17px rgba(0, 0, 0, 0.14), 
+        box-shadow: var(--ha-card-box-shadow,
+                        9px 9px 17px rgba(0, 0, 0, 0.14),
                         -9px -9px 17px rgba(0, 0, 0, 0.12));
       }
 
