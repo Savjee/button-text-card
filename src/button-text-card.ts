@@ -13,7 +13,6 @@ import {
   hasAction,
   ActionHandlerEvent,
   handleAction,
-  getLovelace,
 } from 'custom-card-helpers';
 
 import {
@@ -285,7 +284,13 @@ export class BoilerplateCard extends LitElement {
    * cards while editing a dashboard to easily find the correct card.
    */
   private _inEditMode(): boolean {
-    return getLovelace().editMode === true;
+    const lovelace = this._getLovelace();
+    if(!lovelace){
+      console.warn("Lovelace not found. Edit mode cannot be detected.");
+      return false;
+    }
+
+    return lovelace._editMode === true;
   }
 
   /**
@@ -307,6 +312,22 @@ export class BoilerplateCard extends LitElement {
       this.hass,
       [],
     );
+  }
+
+  private _getLovelace() {
+    let root: any = document.querySelector('home-assistant');
+    root = root && root.shadowRoot;
+    root = root && root.querySelector('home-assistant-main');
+    root = root && root.shadowRoot;
+    root = root && root.querySelector('ha-drawer partial-panel-resolver ha-panel-lovelace');
+    root = root && root.shadowRoot;
+    root = root && root.querySelector('hui-root');
+    if (root) {
+        const ll = root.lovelace;
+        ll.current_view = root.___curView;
+        return ll;
+    }
+    return null;
   }
 
   static get styles(): CSSResultGroup {
